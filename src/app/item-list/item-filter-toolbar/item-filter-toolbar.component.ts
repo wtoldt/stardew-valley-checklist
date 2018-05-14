@@ -11,7 +11,7 @@ import { ItemFilters, ItemSearchFilter, ItemSeasonFilter,
 export class ItemFilterToolbarComponent {
 
   @Input()
-  private itemFilters: ItemFilters;
+  public itemFilters: ItemFilters;
   @Output()
   private itemFiltersChange = new EventEmitter<ItemFilters>();
 

@@ -17,7 +17,7 @@ export class ItemSeasonFilterComponent {
   public itemSeasonFilter: ItemSeasonFilter;
   @Output()
   private itemSeasonFilterChange = new EventEmitter<ItemSeasonFilter>();
-  private availableSeasons: Season[];
+  public availableSeasons: Season[];
   public andOrOptions = andOrOptions;
   public containsAnyOnlyOptions = containsAnyOnlyOptions;
 
