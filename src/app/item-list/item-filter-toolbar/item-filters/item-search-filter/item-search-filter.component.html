@@ -1,0 +1,23 @@
+<div class="container">
+  <mat-form-field class="search-input">
+    <input matInput type="text" placeholder="Search Name..." #nameSearchInput
+        (keyup.enter)="onNameSearchEnter($event)"/>
+    <button mat-button 
+        *ngIf="nameSearchInput.value.length > 0" 
+        matSuffix mat-icon-button aria-label="Clear" (click)="onNameSearchClear()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <span class="example-spacer"></span>
+
+  <mat-form-field class="search-input">
+    <input matInput type="text" placeholder="Search Description..." #sourceSearchInput
+        (keyup.enter)="onSourceSearchEnter($event)"/>
+    <button mat-button 
+        *ngIf="sourceSearchInput.value.length > 0" 
+        matSuffix mat-icon-button aria-label="Clear" (click)="onSourceSearchClear()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+</div>

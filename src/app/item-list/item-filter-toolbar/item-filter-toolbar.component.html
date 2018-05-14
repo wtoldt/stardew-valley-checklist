@@ -1,0 +1,31 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row style="height:150px;">
+    <mat-tab-group style="width:100%;">
+      <mat-tab label="Search">
+        <app-item-search-filter
+            [itemSearchFilter]="itemFilters?.searchFilter"
+            (itemSearchFilterChange)="onItemSearchFilterChange($event)">
+        </app-item-search-filter>
+      </mat-tab>
+      <mat-tab label="Season">
+        <app-item-season-filter
+            [itemSeasonFilter]="itemFilters?.seasonFilter"
+            (itemSeasonFilterChange)="onItemSeasonFilterChange($event)">
+        </app-item-season-filter>
+      </mat-tab>
+      <mat-tab label="Skill">
+        <app-item-skill-filter
+            [itemSkillFilter]="itemFilters?.skillFilter"
+            (itemSkillFilterChange)="onItemSkillFilterChange($event)">
+        </app-item-skill-filter>
+      </mat-tab>
+      <mat-tab label="Bundle">
+        <app-item-bundle-filter
+            [itemBundleFilter]="itemFilters?.bundleFilter"
+            (itemBundleFilterChange)="onItemBundleFilterChange($event)">
+        </app-item-bundle-filter>
+      </mat-tab>
+    </mat-tab-group>
+    <button mat-button color="warn" (click)="resetItemFilters()">Reset All</button>
+  </mat-toolbar-row>
+</mat-toolbar>

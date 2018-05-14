@@ -1,0 +1,42 @@
+
+<div class="container">
+  <mat-form-field>
+    <mat-select placeholder="Seasons" 
+        [value]="itemSeasonFilter?.selectedSeasons"
+        (selectionChange)="onSelectedSeasonChange($event.value)"
+        multiple>
+      <mat-option *ngFor="let season of availableSeasons" 
+          [value]="season.id">
+        {{season.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <span class="example-spacer"></span>
+
+  <mat-form-field>
+    <mat-select placeholder="AndOr" 
+        [value]="itemSeasonFilter?.andOr"
+        (selectionChange)="onAndOrChange($event.value)"
+        matTooltip="And: All selected seasons are present. Or: At least one selected season is present">
+      <mat-option *ngFor="let option of andOrOptions" 
+          [value]="option.value">
+        {{option.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <span class="example-spacer"></span>
+
+  <mat-form-field>
+    <mat-select placeholder="Contains" 
+        [value]="itemSeasonFilter?.containsAnyOnly"
+        (selectionChange)="onContainsAnyOnlyChange($event.value)"
+        matTooltip="Any: Selected season(s) are present and maybe others too. Only: Only the selected seasons are present">
+      <mat-option *ngFor="let option of containsAnyOnlyOptions" 
+          [value]="option.value">
+        {{option.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

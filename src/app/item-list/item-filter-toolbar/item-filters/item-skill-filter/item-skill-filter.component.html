@@ -1,0 +1,41 @@
+<div class="container">
+    <mat-form-field>
+      <mat-select placeholder="Skills" 
+          [value]="itemSkillFilter?.selectedSkills"
+          (selectionChange)="onSelectedSkillChange($event.value)"
+          multiple>
+        <mat-option *ngFor="let skill of availableSkills"
+            [value]="skill.id">
+          {{skill.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <span class="example-spacer"></span>
+  
+    <mat-form-field>
+      <mat-select placeholder="AndOr" 
+          [value]="itemSkillFilter?.andOr"
+          (selectionChange)="onAndOrChange($event.value)"
+          matTooltip="And: All selected skills are present. Or: At least one selected skill is present">
+        <mat-option *ngFor="let option of andOrOptions" 
+            [value]="option.value">
+          {{option.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <span class="example-spacer"></span>
+  
+    <mat-form-field>
+      <mat-select placeholder="Contains" 
+          [value]="itemSkillFilter?.containsAnyOnly"
+          (selectionChange)="onContainsAnyOnlyChange($event.value)"
+          matTooltip="Any: Selected skill(s) are present and maybe others too. Only: Only the selected skills are present">
+        <mat-option *ngFor="let option of containsAnyOnlyOptions" 
+            [value]="option.value">
+          {{option.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>

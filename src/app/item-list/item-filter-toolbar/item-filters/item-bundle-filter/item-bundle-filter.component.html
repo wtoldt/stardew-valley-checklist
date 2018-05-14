@@ -1,0 +1,55 @@
+<div class="container">
+
+  <mat-form-field>
+    <mat-select placeholder="Room" 
+        [value]="itemBundleFilter?.selectedRoom"
+        (selectionChange)="onSelectedRoomChange($event.value)">
+      <mat-option *ngFor="let room of availableRooms" 
+          [value]="room.id">
+        {{room.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <span class="example-spacer"></span>
+
+  <mat-form-field>
+    <mat-select placeholder="Bundles" 
+        [value]="itemBundleFilter?.selectedBundles"
+        (selectionChange)="onSelectedBundleChange($event.value)"
+        multiple>
+      <mat-option *ngFor="let bundle of availableBundles" 
+          [value]="bundle.id">
+        {{bundle.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <span class="example-spacer"></span>
+
+  <mat-form-field>
+    <mat-select placeholder="AndOr" 
+        [value]="itemBundleFilter?.andOr"
+        (selectionChange)="onAndOrChange($event.value)"
+        matTooltip="And: All selected Bundles are present. Or: At least one selected Bundle is present">
+      <mat-option *ngFor="let option of andOrOptions" 
+          [value]="option.value">
+        {{option.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <span class="example-spacer"></span>
+
+  <mat-form-field>
+    <mat-select placeholder="Contains" 
+        [value]="itemBundleFilter?.containsAnyOnly"
+        (selectionChange)="onContainsAnyOnlyChange($event.value)"
+        matTooltip="Any: Selected Bundle(s) are present and maybe others too. Only: Only the selected Bundles are present">
+      <mat-option *ngFor="let option of containsAnyOnlyOptions" 
+          [value]="option.value">
+        {{option.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
