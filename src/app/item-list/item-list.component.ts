@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { db, DataBase, Item, Season, Bundle } from '../db';
+import { db, DataBase, Item, Season, Bundle, Room } from '../db';
 import { Observable, of, from, BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { map, filter, scan } from 'rxjs/operators';
 import { MatSelectChange } from '@angular/material';
@@ -15,6 +15,8 @@ export class ItemListComponent {
   filteredItems$: Observable<Item[]>;
   itemFilters$ = new BehaviorSubject<ItemFilters>(initialItemFilters);
   roomBundlesMap: any = {};
+  bundleMap: Map<number, Bundle>;
+  roomMap: Map<number, Room>;
 
   constructor() {
     this.db = db;
@@ -24,12 +26,17 @@ export class ItemListComponent {
       (items, itemFilters) => this.itemsFilter(items, itemFilters)
     );
 
-    db.rooms.forEach(r => this.roomBundlesMap[r.id] = []);
-    db.bundles.forEach(b => this.roomBundlesMap[b.room].push(b.id));
+    this.bundleMap = db.bundles.reduce((accum: Map<number, Bundle>, b) => accum.set(b.id, b), new Map<number, Bundle>());
+    this.roomMap = db.rooms.reduce((accum: Map<number, Room>, r) => accum.set(r.id, r), new Map<number, Room>());
   }
 
   getBundleName(id: number): string {
-    return db.bundles.filter(i => i.id === id)[0].name;
+    return this.bundleMap.get(id).name;    
+  }
+
+  getRoomNames(bundleIds: number[]): Set<string> {
+    return bundleIds.map(id => this.roomMap.get(this.bundleMap.get(id).room).name)
+      .reduce((accum:Set<string>, name) => accum.add(name), new Set<string>());
   }
 
   onItemFiltersChange(itemFilters: ItemFilters): void {
@@ -93,10 +100,11 @@ export class ItemListComponent {
 
     // Bundle Filter
     if (itemFilters.bundleFilter.selectedRoom !== undefined) {
-      const roomBundles = this.roomBundlesMap[itemFilters.bundleFilter.selectedRoom];
-      console.log(roomBundles);
+      
+      const selectedRoom = itemFilters.bundleFilter.selectedRoom;
+      const roomBundleIds: number[] = db.bundles.filter(b => b.room === selectedRoom).map(b => b.id);
       filteredItems = filteredItems
-        .filter(i => i.bundles.filter(b => this.contains(roomBundles, b)).length > 0);
+        .filter(i => i.bundles.filter(b => this.contains(roomBundleIds, b)).length > 0);
     }
     const selectedBundles = itemFilters.bundleFilter.selectedBundles;
     if (selectedBundles.length > 0) {

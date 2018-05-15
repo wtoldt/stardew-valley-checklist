@@ -32,6 +32,13 @@
             {{getBundleName(bundleId)}}
           </mat-chip>
       </mat-chip-list>
+      <mat-divider></mat-divider>
+      Rooms:
+      <mat-chip-list>
+        <mat-chip *ngFor="let roomName of getRoomNames(item.bundles)">
+          {{roomName}}
+        </mat-chip>
+    </mat-chip-list>
     </mat-card-content>
     <!-- <mat-card-actions>
       <button mat-button>LIKE</button>
