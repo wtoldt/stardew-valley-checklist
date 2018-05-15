@@ -1,0 +1,43 @@
+<mat-toolbar color="accent">
+  <mat-toolbar-row style="height:150px;">
+
+      <div class="container" style="overflow-x: auto">
+          <mat-form-field class="search-input">
+            <input matInput type="text" placeholder="Search Name..." #nameSearchInput
+                (keyup.enter)="onNameSearchEnter($event)"/>
+            <button mat-button 
+                *ngIf="nameSearchInput.value.length > 0" 
+                matSuffix mat-icon-button aria-label="Clear" (click)="onNameSearchClear()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        
+          <span class="example-spacer"></span>
+        
+          <mat-form-field class="search-input">
+            <input matInput type="text" placeholder="Search Reward..." #rewardSearchInput
+                (keyup.enter)="onRewardSearchEnter($event)"/>
+            <button mat-button 
+                *ngIf="rewardSearchInput.value.length > 0" 
+                matSuffix mat-icon-button aria-label="Clear" (click)="onRewardSearchClear()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+
+          <span class="example-spacer"></span>
+
+          <mat-form-field>
+            <mat-select placeholder="Room" 
+                [value]="bundleFilters?.selectedRoom"
+                (selectionChange)="onSelectedRoomChange($event.value)">
+              <mat-option [value]="undefined">None</mat-option>
+              <mat-option *ngFor="let room of availableRooms" 
+                  [value]="room.id">
+                {{room.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+  </mat-toolbar-row>
+</mat-toolbar>

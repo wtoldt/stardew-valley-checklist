@@ -4,6 +4,7 @@
     <mat-select placeholder="Room" 
         [value]="itemBundleFilter?.selectedRoom"
         (selectionChange)="onSelectedRoomChange($event.value)">
+      <mat-option [value]="undefined">None</mat-option>
       <mat-option *ngFor="let room of availableRooms" 
           [value]="room.id">
         {{room.name}}
