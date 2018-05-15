@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { db, DataBase, Item, Season, Bundle, Room } from '../db';
+import { db, DataBase, Item, Season, Bundle, Room, bundleMap, roomMap } from '../db';
 import { Observable, of, from, BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { map, filter, scan } from 'rxjs/operators';
 import { MatSelectChange } from '@angular/material';
@@ -14,9 +14,8 @@ export class ItemListComponent {
   db: DataBase;
   filteredItems$: Observable<Item[]>;
   itemFilters$ = new BehaviorSubject<ItemFilters>(initialItemFilters);
-  roomBundlesMap: any = {};
-  bundleMap: Map<number, Bundle>;
-  roomMap: Map<number, Room>;
+  bundleMap: Map<number, Bundle> = bundleMap;
+  roomMap: Map<number, Room> = roomMap;
 
   constructor() {
     this.db = db;
@@ -25,18 +24,15 @@ export class ItemListComponent {
       this.itemFilters$,
       (items, itemFilters) => this.itemsFilter(items, itemFilters)
     );
-
-    this.bundleMap = db.bundles.reduce((accum: Map<number, Bundle>, b) => accum.set(b.id, b), new Map<number, Bundle>());
-    this.roomMap = db.rooms.reduce((accum: Map<number, Room>, r) => accum.set(r.id, r), new Map<number, Room>());
   }
 
   getBundleName(id: number): string {
-    return this.bundleMap.get(id).name;    
+    return this.bundleMap.get(id).name;
   }
 
   getRoomNames(bundleIds: number[]): Set<string> {
     return bundleIds.map(id => this.roomMap.get(this.bundleMap.get(id).room).name)
-      .reduce((accum:Set<string>, name) => accum.add(name), new Set<string>());
+      .reduce((accum: Set<string>, name) => accum.add(name), new Set<string>());
   }
 
   onItemFiltersChange(itemFilters: ItemFilters): void {
@@ -100,7 +96,6 @@ export class ItemListComponent {
 
     // Bundle Filter
     if (itemFilters.bundleFilter.selectedRoom !== undefined) {
-      
       const selectedRoom = itemFilters.bundleFilter.selectedRoom;
       const roomBundleIds: number[] = db.bundles.filter(b => b.room === selectedRoom).map(b => b.id);
       filteredItems = filteredItems

@@ -16,6 +16,7 @@ import { ItemSeasonFilterComponent } from './item-list/item-filter-toolbar/item-
 import { ItemSearchFilterComponent } from './item-list/item-filter-toolbar/item-filters/item-search-filter/item-search-filter.component';
 import { ItemSkillFilterComponent } from './item-list/item-filter-toolbar/item-filters/item-skill-filter/item-skill-filter.component';
 import { ItemBundleFilterComponent } from './item-list/item-filter-toolbar/item-filters/item-bundle-filter/item-bundle-filter.component';
+import { BundleListComponent } from './bundle-list/bundle-list.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { ItemBundleFilterComponent } from './item-list/item-filter-toolbar/item-
     ItemSeasonFilterComponent,
     ItemSearchFilterComponent,
     ItemSkillFilterComponent,
-    ItemBundleFilterComponent
+    ItemBundleFilterComponent,
+    BundleListComponent
   ],
   imports: [
     BrowserModule,
