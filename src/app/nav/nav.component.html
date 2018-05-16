@@ -1,18 +1,110 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav
-    #drawer
-    class="sidenav"
-    fixedInViewport="true"
-    [attr.role]="'dialog'"
-    [mode]="'over'"
-    >
-    <mat-toolbar color="primary">Menu</mat-toolbar>
+      #drawer
+      class="sidenav"
+      fixedInViewport="true"
+      [attr.role]="'dialog'"
+      [mode]="'over'">
+
+    <mat-toolbar color="primary">Manage Checklists</mat-toolbar>
+
     <mat-nav-list>
-      <a mat-list-item href="#">Link 1</a>
-      <a mat-list-item href="#">Link 2</a>
-      <a mat-list-item href="#">Link 3</a>
+      <div mat-list-item style="text-align: center; margin-bottom:24px;">
+          <mat-card style="margin-bottom:24px;">
+            <p>
+              <strong>{{ (checkedItemsCount$ | async) }}</strong> 
+              of <strong>122</strong> 
+              ({{ (checkedItemsPercent$ | async) }}%) Checked</p>
+            <mat-slide-toggle 
+                #enableReset
+                style="margin-right: 24px;"
+                matTooltip="Toggle to enable reset button">
+            </mat-slide-toggle>
+            <button 
+                mat-button color="warn" 
+                [disabled]="!enableReset?.checked"
+                (click)="resetCheckedItems(); enableReset.checked=false"
+                matTooltip="WARNING: Resets current checked items to 0"
+                mat-raised-button>
+              Reset
+            </button>
+          </mat-card>
+        <mat-form-field style="width: 90%;">
+          <input matInput 
+              #currentListName
+              placeholder="Checklist Name..."
+              (keyup.enter)="saveCurrentList(currentListName.value)">
+          <mat-hint>Save the current checklist</mat-hint>
+          <button mat-button matSuffix
+              color="primary"
+              (click)="saveCurrentList(currentListName.value)"
+              [disabled]="currentListName.value.length == 0">
+            Save
+          </button>
+        </mat-form-field>
+      </div>
+
+      <mat-toolbar>Import</mat-toolbar>
+
+      <div mat-list-item style="text-align: center; margin-bottom:24px;">
+        <mat-form-field style="width: 90%;">
+          <input matInput placeholder="Enter code here...">
+          <mat-icon matSuffix>code</mat-icon>
+          <mat-hint>Just an array of numbers, nothing fancy</mat-hint>
+        </mat-form-field>
+        <mat-form-field style="width: 90%;">
+          <input matInput placeholder="Give it a name...">
+          <mat-icon matSuffix>mode_edit</mat-icon>
+          <mat-hint>Unnamed imports will not be saved</mat-hint>
+        </mat-form-field>
+        <button mat-button color="primary">Import</button>
+      </div>
+
+      <mat-toolbar>Export</mat-toolbar>
+
+      <div mat-list-item style="text-align: center">
+        <mat-form-field style="width: 90%">
+          <mat-select placeholder="Saved Lists"
+              [value]="selectedListName"
+              (selectionChange)="onSelectedListNameChange($event.value)">
+            <mat-option [value]="undefined">None</mat-option>
+            <mat-option [value]="currentChecklistId">
+              Current <small>({{(checkedItemsCount$ | async)}}/122)</small>
+            </mat-option>
+            <mat-option *ngFor="let name of savedListNames$ | async" 
+                [value]="name">
+              {{name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-button 
+            color="primary"
+            style="margin-bottom: 24px;"
+            [disabled]="selectedListName === undefined"
+            (click)="export()">
+          Export
+        </button>
+        <br />
+        <mat-card 
+            *ngIf="selectedSavedList">
+          <mat-card-header>
+            <mat-card-title>
+              {{ selectedSavedList?.name }}
+              <button mat-button (click)="selectedSavedList = undefined">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-card-title>
+            <mat-card-subtitle>Copy the code below:</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content
+              style="background-color:#212121; color:green; font-family:monospace">
+            {{ selectedSavedList?.checkedItems.toString() }}
+          </mat-card-content>
+        </mat-card>
+      </div>
     </mat-nav-list>
   </mat-sidenav>
+
   <mat-sidenav-content>
     <mat-toolbar color="primary">
       <button
@@ -25,7 +117,9 @@
       <span>Stardew Valley Checklist</span>
     </mat-toolbar>
     <mat-tab-group>
-      <mat-tab label="Items"><app-item-list></app-item-list></mat-tab>
+      <mat-tab label="Items">
+        <app-item-list [checkedItems]="checkedItems$ | async"></app-item-list>
+      </mat-tab>
       <mat-tab label="Bundles"><app-bundle-list></app-bundle-list></mat-tab>
       <mat-tab label="Rooms">Content 2</mat-tab>
       <mat-tab label="Seasons">Content 2</mat-tab>

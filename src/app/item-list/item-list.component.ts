@@ -1,29 +1,44 @@
-import { Component } from '@angular/core';
+import { Component, Input} from '@angular/core';
 
 import { db, DataBase, Item, Season, Bundle, Room, bundleMap, roomMap } from '../db';
 import { Observable, of, from, BehaviorSubject, Subject, combineLatest } from 'rxjs';
-import { map, filter, scan } from 'rxjs/operators';
-import { MatSelectChange } from '@angular/material';
+import { map, filter, scan, take, tap, combineLatest as co } from 'rxjs/operators';
+import { MatSelectChange, PageEvent } from '@angular/material';
 import { ItemFilters, initialItemFilters } from './item-filter-toolbar/item-filters';
+import { ChecklistService } from '../checklist.service';
 @Component({
   selector: 'app-item-list',
   templateUrl: './item-list.component.html',
   styleUrls: ['./item-list.component.scss']
 })
 export class ItemListComponent {
+  @Input()
+  checkedItems: number[];
+  resultCount$ = new BehaviorSubject<number>(0);
+  pageIndex$ = new BehaviorSubject<number>(0);
+  pageSize$ = new BehaviorSubject<number>(15);
   db: DataBase;
   filteredItems$: Observable<Item[]>;
   itemFilters$ = new BehaviorSubject<ItemFilters>(initialItemFilters);
   bundleMap: Map<number, Bundle> = bundleMap;
   roomMap: Map<number, Room> = roomMap;
 
-  constructor() {
+  constructor(private checklistService: ChecklistService) {
     this.db = db;
-    this.filteredItems$ = combineLatest(
+    const filteredList = combineLatest(
       of(db.items),
       this.itemFilters$,
       (items, itemFilters) => this.itemsFilter(items, itemFilters)
+    ).pipe<Item[]>(
+      tap(i => this.resultCount$.next(i.length))
     );
+    this.filteredItems$ = combineLatest(
+      filteredList,
+      this.pageIndex$,
+      this.pageSize$,
+      (ar, i, s) => ar.slice(i * s, (i * s) + s)
+    );
+
   }
 
   getBundleName(id: number): string {
@@ -39,7 +54,25 @@ export class ItemListComponent {
     this.itemFilters$.next(itemFilters);
   }
 
-  itemsFilter(items: Item[], itemFilters: ItemFilters): Item[] {
+  isChecked(id: number): boolean {
+    return this.checkedItems ? this.checkedItems.includes(id) : false;
+  }
+
+  onCheckChange(itemId: number, event: any): void {
+    if (event.checked) {
+      this.checklistService.checkItem(itemId);
+    } else {
+      this.checklistService.unCheckItem(itemId);
+    }
+  }
+
+  onPageChange(event: PageEvent): void {
+    console.log('uh0', event);
+    this.pageIndex$.next(event.pageIndex);
+    this.pageSize$.next(event.pageSize);
+  }
+
+  private itemsFilter(items: Item[], itemFilters: ItemFilters): Item[] {
     let filteredItems = [...items];
 
     // Search Filter

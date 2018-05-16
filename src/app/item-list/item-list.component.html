@@ -4,10 +4,18 @@
       (itemFiltersChange)="onItemFiltersChange($event)">
   </app-item-filter-toolbar>
 
-  Results: {{ (filteredItems$ | async)?.length }}
+  Results: {{ resultCount$ | async }}
   <mat-card class="item-card" *ngFor="let item of filteredItems$ | async">
-    <mat-card-header class="dark">
-      <mat-card-title>{{item.name}}</mat-card-title>
+    <mat-card-header class="dark" 
+        [ngClass]="{'green-darken-4':isChecked(item.id)}">
+      <mat-card-title>
+        <mat-checkbox
+            [checked]="isChecked(item.id)"
+            style="margin-right:24px"
+            (change)="onCheckChange(item.id, $event)">
+        </mat-checkbox>
+        {{item.name}}
+      </mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <p>{{item.source}}</p>
@@ -45,4 +53,12 @@
       <button mat-button>SHARE</button>
     </mat-card-actions> -->
   </mat-card>
+
+  <mat-paginator 
+      style="justify-content: center"
+      [length]="resultCount$ | async"
+      [pageSize]="pageSize$ | async"
+      [pageSizeOptions]="[15, 30, 60, 100]"
+      (page)="onPageChange($event)">
+</mat-paginator>
 </div>

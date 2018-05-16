@@ -9,7 +9,8 @@ import { MatToolbarModule, MatButtonModule,
   MatSidenavModule, MatIconModule, MatListModule,
   MatGridListModule, MatCardModule, MatMenuModule,
   MatTabsModule, MatChipsModule, MatSelectModule,
-  MatTooltipModule, MatInputModule} from '@angular/material';
+  MatTooltipModule, MatInputModule, MatCheckboxModule,
+  MatSlideToggleModule, MatPaginatorModule} from '@angular/material';
 import { ItemListComponent } from './item-list/item-list.component';
 import { ItemFilterToolbarComponent } from './item-list/item-filter-toolbar/item-filter-toolbar.component';
 import { ItemSeasonFilterComponent } from './item-list/item-filter-toolbar/item-filters/item-season-filter/item-season-filter.component';
@@ -18,7 +19,6 @@ import { ItemSkillFilterComponent } from './item-list/item-filter-toolbar/item-f
 import { ItemBundleFilterComponent } from './item-list/item-filter-toolbar/item-filters/item-bundle-filter/item-bundle-filter.component';
 import { BundleListComponent } from './bundle-list/bundle-list.component';
 import { BundleFilterToolbarComponent } from './bundle-list/bundle-filter-toolbar/bundle-filter-toolbar.component';
-
 
 @NgModule({
   declarations: [
@@ -50,6 +50,9 @@ import { BundleFilterToolbarComponent } from './bundle-list/bundle-filter-toolba
     MatSelectModule,
     MatTooltipModule,
     MatInputModule,
+    MatCheckboxModule,
+    MatSlideToggleModule,
+    MatPaginatorModule
   ],
   providers: [],
   bootstrap: [AppComponent]
