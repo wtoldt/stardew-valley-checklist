@@ -7,10 +7,19 @@
   <mat-toolbar>
       Results: {{(filteredBundles$ | async).length}}
   </mat-toolbar>
-
+  
   <mat-card class="item-card" *ngFor="let bundle of filteredBundles$ | async">
-    <mat-card-header class="dark">
-      <mat-card-title>{{bundle.name}}</mat-card-title>
+    <mat-card-header class="dark"
+        [ngClass]="{'green-darken-4':(bundleCompletionMap$ | async)?.get(bundle.id).complete}">
+      <mat-card-title>
+        <mat-icon
+            *ngIf="(bundleCompletionMap$ | async)?.get(bundle.id).complete"
+            color="accent">
+          done_all
+        </mat-icon>
+        {{bundle.name}}
+        ({{(bundleCompletionMap$ | async)?.get(bundle.id).checkedItems}}/{{bundle.items_required}})
+      </mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <mat-divider></mat-divider>

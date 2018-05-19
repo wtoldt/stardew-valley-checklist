@@ -5,6 +5,15 @@ import { BundleFilters, initialBundleFilters } from './bundle-filter-toolbar/bun
 import { FilterService } from '../filter.service';
 import { LayoutService } from '../layout.service';
 import { initialItemFilters, ItemBundleFilter } from '../item-list/item-filter-toolbar/item-filters';
+import { ChecklistService } from '../checklist.service';
+import { reduce } from 'rxjs/operators';
+
+export interface BundleCompletionStatus {
+  id: number;
+  complete: boolean;
+  checkedItems: number;
+}
+
 @Component({
   selector: 'app-bundle-list',
   templateUrl: './bundle-list.component.html',
@@ -18,7 +27,10 @@ export class BundleListComponent {
   private roomMap: Map<number, Room> = roomMap;
   public filteredBundles$: Observable<Bundle[]>;
   public bundleFilters$: Observable<BundleFilters>;
+  public bundleCompletionMap$: Observable<Map<number, BundleCompletionStatus>>;
+
   constructor(
+    private checklistService: ChecklistService,
     private filterService: FilterService,
     private layoutService: LayoutService
   ) {
@@ -27,6 +39,26 @@ export class BundleListComponent {
       of(db.bundles),
       this.bundleFilters$,
       (bundles, filters) => this.bundleFilter(bundles, filters)
+    );
+
+    this.bundleCompletionMap$ = combineLatest<Map<number, BundleCompletionStatus>>(
+      this.filteredBundles$,
+      checklistService.getCheckedItems(),
+      (bundles, items) => {
+        const foo: BundleCompletionStatus[] = bundles.map(b => {
+          const bundleItems = db.items.filter(i => i.bundles.includes(b.id));
+          const checkedBundleItems = bundleItems.filter(i => items.includes(i.id));
+          return {
+            id: b.id,
+            complete: checkedBundleItems.length >= b.items_required,
+            checkedItems: checkedBundleItems.length
+          };
+        });
+        const bar =  foo.reduce((accum, curVal) => {
+          return accum.set(curVal.id, curVal);
+        }, new Map<number, BundleCompletionStatus>());
+        return bar;
+      }
     );
   }
 
