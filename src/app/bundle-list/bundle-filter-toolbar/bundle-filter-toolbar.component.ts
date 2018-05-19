@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
-import { BundleFilters } from './bundle-filters';
+import { BundleFilters, initialBundleFilters } from './bundle-filters';
 import { Bundle, Room, db } from '../../db';
 
 @Component({
@@ -53,5 +53,9 @@ export class BundleFilterToolbarComponent {
   onSelectedRoomChange(selection: number): void {
     const newBundleFilters = {...this.bundleFilters, selectedRoom: selection};
     this.bundleFiltersChange.emit(newBundleFilters);
+  }
+
+  resetItemFilters(): void {
+    this.bundleFiltersChange.emit(initialBundleFilters);
   }
 }

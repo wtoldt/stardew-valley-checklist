@@ -1,11 +1,15 @@
 import { Component, } from '@angular/core';
-import { db, DataBase, Item, Season, Bundle, Room, roomMap } from '../db';
+import { db, DataBase, Item, Season, Bundle, Room, roomMap, bundleItemMap, bundleMap } from '../db';
 import { Observable, of, BehaviorSubject, combineLatest } from 'rxjs';
 import { BundleFilters, initialBundleFilters } from './bundle-filter-toolbar/bundle-filters';
 @Component({
   selector: 'app-bundle-list',
   templateUrl: './bundle-list.component.html',
-  styles: []
+  styles: [
+    '.example-spacer {flex: 1 1 auto;}',
+    '.container {display: flex; box-sizing: border-box; width: 100%;}',
+    '.search-input {width: 250px}'
+  ]
 })
 export class BundleListComponent {
   private roomMap: Map<number, Room> = roomMap;
@@ -21,6 +25,10 @@ export class BundleListComponent {
 
   getRoomName(roomId: number): string {
     return roomMap.get(roomId).name;
+  }
+
+  getBundleItems(bundleId: number): Item[] {
+    return bundleItemMap.get(bundleId);
   }
 
   onBundleFiltersChange(bundleFilters: BundleFilters): void {

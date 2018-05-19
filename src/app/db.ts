@@ -290,7 +290,6 @@ export const db: DataBase = {
         'foraging'
       ],
       'bundles': [
-        4,
         4
       ],
       'checked': false
@@ -401,8 +400,7 @@ export const db: DataBase = {
         'mining'
       ],
       'bundles': [
-        5,
-        22
+        5
       ],
       'checked': false
     },
@@ -421,8 +419,7 @@ export const db: DataBase = {
         'mining'
       ],
       'bundles': [
-        5,
-        23
+        5
       ],
       'checked': false
     },
@@ -440,8 +437,7 @@ export const db: DataBase = {
         'foraging'
       ],
       'bundles': [
-        5,
-        21
+        5
       ],
       'checked': false
     },
@@ -459,8 +455,7 @@ export const db: DataBase = {
         'foraging'
       ],
       'bundles': [
-        5,
-        25
+        5
       ],
       'checked': false
     },
@@ -969,8 +964,7 @@ export const db: DataBase = {
         'farming'
       ],
       'bundles': [
-        11,
-        24
+        11
       ],
       'checked': false
     },
@@ -1034,8 +1028,7 @@ export const db: DataBase = {
         'farming'
       ],
       'bundles': [
-        11,
-        25
+        11
       ],
       'checked': false
     },
@@ -2140,7 +2133,129 @@ export const db: DataBase = {
         29
       ],
       'checked': false
-    }
+    },
+    {
+      'id': 123,
+      'name': 'Wood (99)',
+      'source': 'Chopping trees or logs using an axe.',
+      'seasons': [
+        'spring',
+        'summer',
+        'fall',
+        'winter'
+      ],
+      'skills': [
+        'foraging'
+      ],
+      'bundles': [
+        4
+      ],
+      'checked': false
+    },
+    {
+      'id': 124,
+      'name': 'Red Mushroom',
+      'source': 'Can be found in the mines or in the farm cave if you selected the mushroom perk.',
+      'seasons': [
+        'spring',
+        'summer',
+        'fall',
+        'winter'
+      ],
+      'skills': [
+        'foraging',
+        'mining'
+      ],
+      'bundles': [
+        22
+      ],
+      'checked': false
+    },
+    {
+      'id': 125,
+      'name': 'Purple Mushroom',
+      'source': 'Can be found in the mines or in the farm cave if you selected the mushroom perk.',
+      'seasons': [
+        'spring',
+        'summer',
+        'fall',
+        'winter'
+      ],
+      'skills': [
+        'foraging',
+        'mining'
+      ],
+      'bundles': [
+        23
+      ],
+      'checked': false
+    },
+    {
+      'id': 126,
+      'name': 'Maple Syrup',
+      'source': 'Harvested from maple trees using a Tapper.',
+      'seasons': [
+        'spring',
+        'summer',
+        'fall',
+        'winter'
+      ],
+      'skills': [
+        'foraging'
+      ],
+      'bundles': [
+        21
+      ],
+      'checked': false
+    },
+    {
+      'id': 127,
+      'name': 'Oak Resin',
+      'source': 'Harvested from oak trees using a Tapper.',
+      'seasons': [
+        'spring',
+        'summer',
+        'fall',
+        'winter'
+      ],
+      'skills': [
+        'foraging'
+      ],
+      'bundles': [
+        25
+      ],
+      'checked': false
+    },
+    {
+      'id': 128,
+      'name': 'Apple',
+      'source': 'Gathered from Apple Trees during Fall. Fodder Bundle requires 3.',
+      'seasons': [
+        'fall'
+      ],
+      'skills': [
+        'farming'
+      ],
+      'bundles': [
+        24
+      ],
+      'checked': false
+    },
+    {
+      'id': 129,
+      'name': 'Pomegranate',
+      'source': 'Gathered from Pomegranate Trees during Fall.',
+      'seasons': [
+        'fall'
+      ],
+      'skills': [
+        'farming'
+      ],
+      'bundles': [
+        25
+      ],
+      'checked': false
+    },
   ],
   'bundles': [
     {
@@ -2437,3 +2552,11 @@ export const bundleMap: Map<number, Bundle> =
 
 export const roomMap: Map<number, Room> =
   db.rooms.reduce((accum: Map<number, Room>, r) => accum.set(r.id, r), new Map<number, Room>());
+
+export const bundleItemMap: Map<number, Item[]> =
+  db.items.reduce((accum: Map<number, Item[]>, item) => {
+    const bundleId = item.bundles[0];
+    const items = accum.get(bundleId) ? accum.get(bundleId) : [];
+    accum.set(bundleId, [...items, item]);
+    return accum;
+  }, new Map<number, Item[]>());

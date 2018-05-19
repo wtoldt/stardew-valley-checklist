@@ -12,18 +12,36 @@
     <mat-card-content>
       <mat-divider></mat-divider>
       Reward: <br />
-      <mat-chip>{{bundle.reward}}</mat-chip> <br />
+      <div class="container">
+        <mat-chip>{{bundle.reward}}</mat-chip>
+      </div>
       <mat-divider></mat-divider>
-      Items Required: <br />
-      <mat-chip>{{bundle.items_required}}</mat-chip> <br />
+      <div class="container">
+        <div>
+            Items Available: <br />
+            <mat-chip>{{getBundleItems(bundle.id).length}}</mat-chip>
+        </div>
+        <span class="example-spacer"></span>
+        <div>
+            Items Required: <br />
+            <mat-chip>{{bundle.items_required}}</mat-chip>
+        </div>
+        <span class="example-spacer"></span>
+        <!-- <div style="padding-top:7px;">
+          <button mat-button color=primary>Check All</button>
+        </div> -->
+      </div>
       <mat-divider></mat-divider>
       Room: <br />
-      <mat-chip>{{getRoomName(bundle.room)}}</mat-chip> <br />
+      <div class="container">
+        <mat-chip>{{getRoomName(bundle.room)}}</mat-chip>
+      </div>
+      <mat-divider></mat-divider>
+      <!-- <div class="container" style="padding-top:24px">
+        <button mat-button>Show Items</button>
+        <span class="example-spacer"></span>
+      </div> -->
     </mat-card-content>
-    <!-- <mat-card-actions>
-      <button mat-button>LIKE</button>
-      <button mat-button>SHARE</button>
-    </mat-card-actions> -->
   </mat-card>
 </div>
 

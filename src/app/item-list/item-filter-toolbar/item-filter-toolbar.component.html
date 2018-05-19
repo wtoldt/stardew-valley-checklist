@@ -1,5 +1,8 @@
 <mat-toolbar color="accent">
-    <mat-toolbar-row style="height:150px;">
+  <mat-toolbar-row style="height:38px;">
+    Filters <button mat-button color="warn" (click)="resetItemFilters()">Reset All</button>
+  </mat-toolbar-row>
+  <mat-toolbar-row style="height:150px;">
     <mat-tab-group style="width:100%;">
       <mat-tab label="Search">
         <app-item-search-filter
@@ -26,6 +29,5 @@
         </app-item-bundle-filter>
       </mat-tab>
     </mat-tab-group>
-    <button mat-button color="warn" (click)="resetItemFilters()">Reset All</button>
   </mat-toolbar-row>
 </mat-toolbar>
