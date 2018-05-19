@@ -5,14 +5,9 @@ import { BundleFilters, initialBundleFilters } from './bundle-filter-toolbar/bun
 import { FilterService } from '../filter.service';
 import { LayoutService } from '../layout.service';
 import { initialItemFilters, ItemBundleFilter } from '../item-list/item-filter-toolbar/item-filters';
-import { ChecklistService } from '../checklist.service';
+import { ChecklistService, BundleCompletionStatus } from '../checklist.service';
 import { reduce } from 'rxjs/operators';
 
-export interface BundleCompletionStatus {
-  id: number;
-  complete: boolean;
-  checkedItems: number;
-}
 
 @Component({
   selector: 'app-bundle-list',
@@ -41,25 +36,7 @@ export class BundleListComponent {
       (bundles, filters) => this.bundleFilter(bundles, filters)
     );
 
-    this.bundleCompletionMap$ = combineLatest<Map<number, BundleCompletionStatus>>(
-      this.filteredBundles$,
-      checklistService.getCheckedItems(),
-      (bundles, items) => {
-        const foo: BundleCompletionStatus[] = bundles.map(b => {
-          const bundleItems = db.items.filter(i => i.bundles.includes(b.id));
-          const checkedBundleItems = bundleItems.filter(i => items.includes(i.id));
-          return {
-            id: b.id,
-            complete: checkedBundleItems.length >= b.items_required,
-            checkedItems: checkedBundleItems.length
-          };
-        });
-        const bar =  foo.reduce((accum, curVal) => {
-          return accum.set(curVal.id, curVal);
-        }, new Map<number, BundleCompletionStatus>());
-        return bar;
-      }
-    );
+    this.bundleCompletionMap$ = checklistService.getBundleCompletionMap();
   }
 
   getRoomName(roomId: number): string {

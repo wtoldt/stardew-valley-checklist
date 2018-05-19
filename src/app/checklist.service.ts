@@ -3,10 +3,22 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { YesNoDialogComponent } from './yes-no-dialog/yes-no-dialog.component';
 import { map } from 'rxjs/operators';
+import { db, bundleItemMap, bundleMap } from './db';
 
 export interface SavedList {
   name: string;
   checkedItems: number[];
+}
+export interface BundleCompletionStatus {
+  id: number;
+  complete: boolean;
+  checkedItems: number;
+}
+export interface RoomCompletionStatus {
+  id: number;
+  complete: boolean;
+  requiredBundles: number;
+  checkedBundles: number;
 }
 export const currentChecklistId = '28c8cdb62903833cfe9f7d6f4c9bc8e9';
 
@@ -16,6 +28,8 @@ export const currentChecklistId = '28c8cdb62903833cfe9f7d6f4c9bc8e9';
 export class ChecklistService {
   private checkedItems$ = new BehaviorSubject<number[]>([]);
   private savedLists$ = new BehaviorSubject<SavedList[]>([]);
+  private bundleCompletionMap$: Observable<Map<number, BundleCompletionStatus>>;
+  private roomCompletionMap$: Observable<Map<number, RoomCompletionStatus>>;
 
   constructor(public dialog: MatDialog) {
     // Load current & saved lists
@@ -32,6 +46,40 @@ export class ChecklistService {
       this.savedLists$.next(JSON.parse(loadedSavedLists));
     }
 
+    this.bundleCompletionMap$ = this.checkedItems$.pipe(
+      map(items => {
+        return db.bundles.map(b => {
+          const bundleItemIds = bundleItemMap.get(b.id).map(i => i.id);
+          const checkedItems = items
+            .filter(i => bundleItemIds.includes(i)).length;
+          return {
+            id: b.id,
+            complete: checkedItems >= b.items_required,
+            checkedItems: checkedItems
+          };
+        }).reduce((accum, curVal) => {
+          return accum.set(curVal.id, curVal);
+        }, new Map<number, BundleCompletionStatus>());
+      })
+    );
+
+    this.roomCompletionMap$ = this.bundleCompletionMap$.pipe(
+      map(bcm => {
+        return db.rooms.map(r => {
+          const requiredBundles = db.bundles.filter(b => b.room === r.id);
+          const bundlesCompleted = requiredBundles.filter(b => bcm.get(b.id).complete).length;
+          return {
+            id: r.id,
+            complete: bundlesCompleted >= requiredBundles.length,
+            requiredBundles: requiredBundles.length,
+            checkedBundles: bundlesCompleted
+          };
+        }).reduce((accum, curVal) => {
+          return accum.set(curVal.id, curVal);
+        }, new Map<number, RoomCompletionStatus>());
+      })
+    );
+
     // Subscribe to our changes and write them to local storage
     this.checkedItems$.subscribe(checkedItems => {
       localStorage.setItem(currentChecklistId, JSON.stringify(checkedItems));
@@ -45,6 +93,14 @@ export class ChecklistService {
 
   public getCheckedItems(): Observable<number[]> {
     return this.checkedItems$;
+  }
+
+  public getBundleCompletionMap(): Observable<Map<number, BundleCompletionStatus>> {
+    return this.bundleCompletionMap$;
+  }
+
+  public getRoomCompletionMap(): Observable<Map<number, RoomCompletionStatus>> {
+    return this.roomCompletionMap$;
   }
 
   public getCurrentCheckedItems(): number[] {

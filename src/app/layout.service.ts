@@ -12,4 +12,8 @@ export class LayoutService {
   public goToItemTab(): void {
     this.currentTab$.next(0);
   }
+
+  public goToBundleTab(): void {
+    this.currentTab$.next(1);
+  }
 }

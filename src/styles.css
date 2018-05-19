@@ -31,3 +31,17 @@
   padding-top: 24px;
   padding-left: 10px;
 }
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.container {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.search-input {
+  width: 250px
+}

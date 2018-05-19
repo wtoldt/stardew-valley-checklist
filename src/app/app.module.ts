@@ -21,6 +21,7 @@ import { ItemBundleFilterComponent } from './item-list/item-filter-toolbar/item-
 import { BundleListComponent } from './bundle-list/bundle-list.component';
 import { BundleFilterToolbarComponent } from './bundle-list/bundle-filter-toolbar/bundle-filter-toolbar.component';
 import { YesNoDialogComponent } from './yes-no-dialog/yes-no-dialog.component';
+import { RoomListComponent } from './room-list/room-list.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { YesNoDialogComponent } from './yes-no-dialog/yes-no-dialog.component';
     ItemBundleFilterComponent,
     BundleListComponent,
     BundleFilterToolbarComponent,
-    YesNoDialogComponent
+    YesNoDialogComponent,
+    RoomListComponent
   ],
   imports: [
     BrowserModule,
