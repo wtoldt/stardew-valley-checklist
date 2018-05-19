@@ -2,6 +2,9 @@ import { Component, } from '@angular/core';
 import { db, DataBase, Item, Season, Bundle, Room, roomMap, bundleItemMap, bundleMap } from '../db';
 import { Observable, of, BehaviorSubject, combineLatest } from 'rxjs';
 import { BundleFilters, initialBundleFilters } from './bundle-filter-toolbar/bundle-filters';
+import { FilterService } from '../filter.service';
+import { LayoutService } from '../layout.service';
+import { initialItemFilters, ItemBundleFilter } from '../item-list/item-filter-toolbar/item-filters';
 @Component({
   selector: 'app-bundle-list',
   templateUrl: './bundle-list.component.html',
@@ -14,8 +17,12 @@ import { BundleFilters, initialBundleFilters } from './bundle-filter-toolbar/bun
 export class BundleListComponent {
   private roomMap: Map<number, Room> = roomMap;
   public filteredBundles$: Observable<Bundle[]>;
-  public bundleFilters$ = new BehaviorSubject<BundleFilters>(initialBundleFilters);
-  constructor() {
+  public bundleFilters$: Observable<BundleFilters>;
+  constructor(
+    private filterService: FilterService,
+    private layoutService: LayoutService
+  ) {
+    this.bundleFilters$ = filterService.getSelectedBundleFilters();
     this.filteredBundles$ = combineLatest(
       of(db.bundles),
       this.bundleFilters$,
@@ -32,7 +39,20 @@ export class BundleListComponent {
   }
 
   onBundleFiltersChange(bundleFilters: BundleFilters): void {
-    this.bundleFilters$.next(bundleFilters);
+    this.filterService.setSelectedBundleFilters(bundleFilters);
+  }
+
+  setItemFiltersToBundleItems(bundleId: number): void {
+    const itemBundleFilter: ItemBundleFilter = {
+      ...initialItemFilters.bundleFilter,
+      selectedBundles: [bundleId]
+    };
+    const itemFilters = {
+      ...initialItemFilters,
+      bundleFilter: itemBundleFilter
+    };
+    this.filterService.setSelectedItemFilters(itemFilters);
+    this.layoutService.goToItemTab();
   }
 
   private bundleFilter(bundles: Bundle[], filters: BundleFilters): Bundle[] {
@@ -53,5 +73,7 @@ export class BundleListComponent {
 
     return filteredBundles;
   }
+
+
 
 }

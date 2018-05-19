@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { ChecklistService, SavedList, currentChecklistId } from '../checklist.service';
 import { map, withLatestFrom, publishReplay } from 'rxjs/operators';
 import { totalItems } from '../db';
+import { LayoutService } from '../layout.service';
 
 @Component({
   selector: 'app-nav',
@@ -27,10 +28,12 @@ export class NavComponent {
   public selectedSavedList: {name: string, exportString: string};
   public exportString = '';
   public totalItems = totalItems;
+  public selectedTabIndex = 0;
 
   constructor(
       private breakpointObserver: BreakpointObserver,
-      private checklistService: ChecklistService) {
+      private checklistService: ChecklistService,
+      public layoutService: LayoutService) {
     this.checkedItems$ = checklistService.getCheckedItems();
     this.checkedItemsCount$ = this.checkedItems$.pipe(
       map(i => i.length)
@@ -42,6 +45,8 @@ export class NavComponent {
     this.savedListNames$ = checklistService.getSavedLists().pipe(
       map(sl => sl.map(i => i.name))
     );
+
+    layoutService.currentTab$.subscribe(index => this.selectedTabIndex = index);
   }
 
   public saveCurrentList(name: string): void {

@@ -40,10 +40,13 @@
         <mat-chip>{{getRoomName(bundle.room)}}</mat-chip>
       </div>
       <mat-divider></mat-divider>
-      <!-- <div class="container" style="padding-top:24px">
-        <button mat-button>Show Items</button>
+      <div class="container" style="padding-top:24px">
+        <button mat-button
+            (click)="setItemFiltersToBundleItems(bundle.id)">
+          Show Items
+        </button>
         <span class="example-spacer"></span>
-      </div> -->
+      </div>
     </mat-card-content>
   </mat-card>
 </div>

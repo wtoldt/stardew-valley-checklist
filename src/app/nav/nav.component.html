@@ -170,7 +170,7 @@
         <small>({{(checkedItemsCount$ | async)}}/{{totalItems}})</small>
       </span>
     </mat-toolbar>
-    <mat-tab-group>
+    <mat-tab-group [(selectedIndex)]="selectedTabIndex">
       <mat-tab label="Items">
         <app-item-list [checkedItems]="checkedItems$ | async"></app-item-list>
       </mat-tab>

@@ -8,6 +8,7 @@ import { map, filter, scan, take, tap, combineLatest as co } from 'rxjs/operator
 import { MatSelectChange, PageEvent } from '@angular/material';
 import { ItemFilters, initialItemFilters } from './item-filter-toolbar/item-filters';
 import { ChecklistService } from '../checklist.service';
+import { FilterService } from '../filter.service';
 @Component({
   selector: 'app-item-list',
   templateUrl: './item-list.component.html',
@@ -19,17 +20,20 @@ export class ItemListComponent {
   resultCount$ = new BehaviorSubject<number>(0);
   pageIndex$ = new BehaviorSubject<number>(0);
   pageSize$ = new BehaviorSubject<number>(15);
-  db: DataBase;
+  db: DataBase = db;
   filteredItems$: Observable<Item[]>;
-  itemFilters$ = new BehaviorSubject<ItemFilters>(initialItemFilters);
+  // itemFilters$ = new BehaviorSubject<ItemFilters>(initialItemFilters);
+  itemFilters$: Observable<ItemFilters>;
   bundleMap: Map<number, Bundle> = bundleMap;
   roomMap: Map<number, Room> = roomMap;
   private filteredItemsSnapshot: Item[] = [];
 
   constructor(
         private checklistService: ChecklistService,
+        private filterService: FilterService,
         public dialog: MatDialog) {
-    this.db = db;
+
+    this.itemFilters$ = filterService.getSelectedItemFilters();
     const filteredList = combineLatest(
       of(db.items),
       this.itemFilters$,
@@ -57,7 +61,8 @@ export class ItemListComponent {
   }
 
   onItemFiltersChange(itemFilters: ItemFilters): void {
-    this.itemFilters$.next(itemFilters);
+    // this.itemFilters$.next(itemFilters);
+    this.filterService.setSelectedItemFilters(itemFilters);
   }
 
   checkFilteredItems(): void {
