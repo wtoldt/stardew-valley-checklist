@@ -22,6 +22,7 @@ import { BundleListComponent } from './bundle-list/bundle-list.component';
 import { BundleFilterToolbarComponent } from './bundle-list/bundle-filter-toolbar/bundle-filter-toolbar.component';
 import { YesNoDialogComponent } from './yes-no-dialog/yes-no-dialog.component';
 import { RoomListComponent } from './room-list/room-list.component';
+import { SeasonListComponent } from './season-list/season-list.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { RoomListComponent } from './room-list/room-list.component';
     BundleListComponent,
     BundleFilterToolbarComponent,
     YesNoDialogComponent,
-    RoomListComponent
+    RoomListComponent,
+    SeasonListComponent
   ],
   imports: [
     BrowserModule,

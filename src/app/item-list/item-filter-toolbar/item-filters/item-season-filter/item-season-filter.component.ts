@@ -22,8 +22,7 @@ export class ItemSeasonFilterComponent {
   public containsAnyOnlyOptions = containsAnyOnlyOptions;
 
   constructor() {
-    this.availableSeasons = db.seasons
-    .filter(s => s.id !== 'allseasons');
+    this.availableSeasons = db.seasons;
   }
 
   onSelectedSeasonChange(selection: string[]): void {

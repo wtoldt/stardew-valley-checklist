@@ -20,6 +20,12 @@ export interface RoomCompletionStatus {
   requiredBundles: number;
   checkedBundles: number;
 }
+export interface SeasonCompletionStatus {
+  id: string;
+  complete: boolean;
+  requiredItems: number;
+  checkedItems: number;
+}
 export const currentChecklistId = '28c8cdb62903833cfe9f7d6f4c9bc8e9';
 
 @Injectable({
@@ -30,6 +36,7 @@ export class ChecklistService {
   private savedLists$ = new BehaviorSubject<SavedList[]>([]);
   private bundleCompletionMap$: Observable<Map<number, BundleCompletionStatus>>;
   private roomCompletionMap$: Observable<Map<number, RoomCompletionStatus>>;
+  private seasonCompletionMap$: Observable<Map<string, SeasonCompletionStatus>>;
 
   constructor(public dialog: MatDialog) {
     // Load current & saved lists
@@ -80,6 +87,23 @@ export class ChecklistService {
       })
     );
 
+    this.seasonCompletionMap$ = this.checkedItems$.pipe(
+      map(items => {
+        return db.seasons.map(s => {
+          const requiredItems = db.items.filter(i => i.seasons.includes(s.id));
+          const checkedItems = requiredItems.filter(i => items.includes(i.id)).length;
+          return {
+            id: s.id,
+            complete: checkedItems >= requiredItems.length,
+            requiredItems: requiredItems.length,
+            checkedItems
+          };
+        }).reduce((accum, curVal) => {
+          return accum.set(curVal.id, curVal);
+        }, new Map<string, SeasonCompletionStatus>());
+      })
+    );
+
     // Subscribe to our changes and write them to local storage
     this.checkedItems$.subscribe(checkedItems => {
       localStorage.setItem(currentChecklistId, JSON.stringify(checkedItems));
@@ -101,6 +125,10 @@ export class ChecklistService {
 
   public getRoomCompletionMap(): Observable<Map<number, RoomCompletionStatus>> {
     return this.roomCompletionMap$;
+  }
+
+  public getSeasonCompletionMap(): Observable<Map<string, SeasonCompletionStatus>> {
+    return this.seasonCompletionMap$;
   }
 
   public getCurrentCheckedItems(): number[] {

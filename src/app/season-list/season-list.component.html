@@ -1,0 +1,30 @@
+<div>
+    <mat-toolbar>
+        Results: {{db.seasons.length}}
+    </mat-toolbar>
+
+  <mat-card class="item-card" *ngFor="let season of db.seasons">
+    <mat-card-header class="dark"
+      [ngClass]="{'green-darken-4':(seasonCompletionMap$ | async)?.get(season.id).complete}">
+      <mat-card-title>
+        <mat-icon
+            *ngIf="(seasonCompletionMap$ | async)?.get(season.id).complete"
+            color="accent">
+          done_all
+        </mat-icon>
+        {{season.name}}
+        ({{(seasonCompletionMap$ | async)?.get(season.id).checkedItems}}/
+        {{(seasonCompletionMap$ | async)?.get(season.id).requiredItems}})
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="container" style="padding-top:24px">
+        <button mat-button
+            (click)="setItemFiltersToSeasonItems(season.id)">
+          Show Items
+        </button>
+        <span class="example-spacer"></span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

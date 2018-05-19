@@ -2503,10 +2503,6 @@ export const db: DataBase = {
   ],
   'seasons': [
     {
-      'id': 'allseasons',
-      'name': 'All Seasons'
-    },
-    {
       'id': 'spring',
       'name': 'Spring'
     },
