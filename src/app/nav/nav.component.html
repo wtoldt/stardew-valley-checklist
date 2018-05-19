@@ -37,8 +37,7 @@
           <mat-hint>Save the current checklist</mat-hint>
           <button mat-button matSuffix
               color="primary"
-              (click)="saveCurrentList(currentListName.value)"
-              [disabled]="currentListName.value.length == 0">
+              (click)="saveCurrentList(currentListName.value)">
             Save
           </button>
         </mat-form-field>
@@ -48,19 +47,21 @@
 
       <div mat-list-item style="text-align: center; margin-bottom:24px;">
         <mat-form-field style="width: 90%;">
-          <input matInput placeholder="Enter code here...">
+          <input matInput 
+              #importCode
+              placeholder="Enter code here..."
+              (keyup.enter)="import()">
           <mat-icon matSuffix>code</mat-icon>
-          <mat-hint>Just an array of numbers, nothing fancy</mat-hint>
         </mat-form-field>
         <mat-form-field style="width: 90%;">
-          <input matInput placeholder="Give it a name...">
+          <input matInput #importName placeholder="Give it a name...">
           <mat-icon matSuffix>mode_edit</mat-icon>
           <mat-hint>Unnamed imports will not be saved</mat-hint>
         </mat-form-field>
         <button mat-button color="primary">Import</button>
       </div>
 
-      <mat-toolbar>Export</mat-toolbar>
+      <mat-toolbar>Export/Load/Delete</mat-toolbar>
 
       <div mat-list-item style="text-align: center">
         <mat-form-field style="width: 90%">
@@ -71,9 +72,9 @@
             <mat-option [value]="currentChecklistId">
               Current <small>({{(checkedItemsCount$ | async)}}/122)</small>
             </mat-option>
-            <mat-option *ngFor="let name of savedListNames$ | async" 
-                [value]="name">
-              {{name}}
+            <mat-option *ngFor="let savedList of savedLists$ | async" 
+                [value]="savedList.name">
+              {{savedList.name}} <small style="margin:0 24px 0 24px">({{(savedList.checkedItems.length)}}/122)</small>
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -84,24 +85,74 @@
             (click)="export()">
           Export
         </button>
+        <button mat-button 
+            color="primary"
+            style="margin-bottom: 24px;"
+            [disabled]="selectedListName === undefined || selectedListName === currentChecklistId"
+            (click)="load()">
+          Load
+        </button>
+            <button mat-button 
+            color="warn"
+            style="margin-bottom: 24px;"
+            [disabled]="selectedListName === undefined || selectedListName === currentChecklistId"
+            (click)="delete()">
+          Delete
+        </button>
         <br />
         <mat-card 
             *ngIf="selectedSavedList">
           <mat-card-header>
             <mat-card-title>
               {{ selectedSavedList?.name }}
-              <button mat-button (click)="selectedSavedList = undefined">
+              <button mat-icon-button (click)="selectedSavedList = undefined">
                 <mat-icon>close</mat-icon>
               </button>
             </mat-card-title>
             <mat-card-subtitle>Copy the code below:</mat-card-subtitle>
           </mat-card-header>
           <mat-card-content
-              style="background-color:#212121; color:green; font-family:monospace">
-            {{ selectedSavedList?.checkedItems.toString() }}
+              style="background-color:#212121; color:green; font-family:monospace; padding:24px">
+            {{ selectedSavedList?.exportString }}
           </mat-card-content>
         </mat-card>
       </div>
+
+      <!-- <mat-toolbar>
+        List 
+        <button mat-icon-button color="primary" 
+            matTooltip="Export" style="padding-left:24px">
+          <mat-icon>open_in_browser</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" 
+            matTooltip="Load" style="padding-left:24px">
+          <mat-icon>hourglass_empty</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" 
+            matTooltip="Delete" style="padding-left:24px">
+          <mat-icon>delete</mat-icon>
+        </button>        
+      </mat-toolbar>
+
+      <div mat-list-item style="text-align: center">
+          <mat-list>
+            <mat-list-item
+                (click)="onSelectedListNameChange(currentChecklistId)"
+                matTooltip="This isn't actually saved, but serves as a placeholder for your current list">
+                <h4 mat-line>
+                  Current <small style="margin:0 24px 0 24px">({{(checkedItemsCount$ | async)}}/122)</small>
+                </h4>
+            </mat-list-item>
+            <mat-list-item 
+                *ngFor="let savedList of savedLists$ | async"
+                (click)="onSelectedListNameChange(savedList.name)">
+                <h4 mat-line>
+                  {{savedList.name}}
+                  <small style="margin:0 24px 0 24px">({{(savedList.checkedItems.length)}}/122)</small>
+                </h4>
+            </mat-list-item>
+          </mat-list>
+      </div> -->
     </mat-nav-list>
   </mat-sidenav>
 

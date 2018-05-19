@@ -67,7 +67,6 @@ export class ItemListComponent {
   }
 
   onPageChange(event: PageEvent): void {
-    console.log('uh0', event);
     this.pageIndex$.next(event.pageIndex);
     this.pageSize$.next(event.pageSize);
   }

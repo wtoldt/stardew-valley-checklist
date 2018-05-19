@@ -10,7 +10,8 @@ import { MatToolbarModule, MatButtonModule,
   MatGridListModule, MatCardModule, MatMenuModule,
   MatTabsModule, MatChipsModule, MatSelectModule,
   MatTooltipModule, MatInputModule, MatCheckboxModule,
-  MatSlideToggleModule, MatPaginatorModule} from '@angular/material';
+  MatSlideToggleModule, MatPaginatorModule,
+  MatDialogModule} from '@angular/material';
 import { ItemListComponent } from './item-list/item-list.component';
 import { ItemFilterToolbarComponent } from './item-list/item-filter-toolbar/item-filter-toolbar.component';
 import { ItemSeasonFilterComponent } from './item-list/item-filter-toolbar/item-filters/item-season-filter/item-season-filter.component';
@@ -19,6 +20,7 @@ import { ItemSkillFilterComponent } from './item-list/item-filter-toolbar/item-f
 import { ItemBundleFilterComponent } from './item-list/item-filter-toolbar/item-filters/item-bundle-filter/item-bundle-filter.component';
 import { BundleListComponent } from './bundle-list/bundle-list.component';
 import { BundleFilterToolbarComponent } from './bundle-list/bundle-filter-toolbar/bundle-filter-toolbar.component';
+import { YesNoDialogComponent } from './yes-no-dialog/yes-no-dialog.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import { BundleFilterToolbarComponent } from './bundle-list/bundle-filter-toolba
     ItemSkillFilterComponent,
     ItemBundleFilterComponent,
     BundleListComponent,
-    BundleFilterToolbarComponent
+    BundleFilterToolbarComponent,
+    YesNoDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -52,9 +55,13 @@ import { BundleFilterToolbarComponent } from './bundle-list/bundle-filter-toolba
     MatInputModule,
     MatCheckboxModule,
     MatSlideToggleModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDialogModule
   ],
   providers: [],
+  entryComponents: [
+    YesNoDialogComponent
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

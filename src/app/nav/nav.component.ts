@@ -1,8 +1,8 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { ChecklistService, SavedList, currentChecklistId } from '../checklist.service';
-import { map } from 'rxjs/operators';
+import { map, withLatestFrom, publishReplay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nav',
@@ -12,13 +12,19 @@ import { map } from 'rxjs/operators';
 export class NavComponent {
   @ViewChild('currentListName')
   public currentListName: ElementRef;
+  @ViewChild('importName')
+  public importName: ElementRef;
+  @ViewChild('importCode')
+  public importCode: ElementRef;
   public checkedItems$: Observable<number[]>;
   public checkedItemsCount$: Observable<number>;
   public checkedItemsPercent$: Observable<number>;
+  public savedLists$: Observable<SavedList[]>;
   public savedListNames$: Observable<string[]>;
   public selectedListName: string;
   public currentChecklistId = currentChecklistId;
-  public selectedSavedList: SavedList;
+  public selectedSavedList: {name: string, exportString: string};
+  public exportString = '';
 
   constructor(
       private breakpointObserver: BreakpointObserver,
@@ -30,40 +36,93 @@ export class NavComponent {
     this.checkedItemsPercent$ = this.checkedItems$.pipe(
       map(i => +(i.length / 122 * 100).toFixed(0))
     );
+    this.savedLists$ = checklistService.getSavedLists();
     this.savedListNames$ = checklistService.getSavedLists().pipe(
       map(sl => sl.map(i => i.name))
     );
   }
 
   public saveCurrentList(name: string): void {
-    //this.checklistService.saveCurrentList(name);
-    this.currentListName.nativeElement.value = '';
+    let listName = name.trim();
+    if (listName === '') {
+      listName = this.checklistService.generateDefaultName();
+      this.currentListName.nativeElement.value = listName;
+    }
+    this.checklistService.saveCurrentList(listName);
     this.currentListName.nativeElement.blur();
   }
 
-  public resetCheckedItems() {
+  public resetCheckedItems(): void {
     this.checklistService.resetCheckedItems();
   }
 
-  public onSelectedListNameChange(value: string) {
+  public onSelectedListNameChange(value: string): void {
     this.selectedListName = value;
   }
 
-  public export() {
+  public import(): void {
+    const importCode = this.importCode.nativeElement.value.trim();
+    const importName = this.importName.nativeElement.value.trim();
+    if (importCode) {
+      const importedCheckedItems: number[] = importCode.split('-').map(s => +s);
+      if (importName) {
+        const importedSavedList: SavedList = {
+          name: importName,
+          checkedItems: importedCheckedItems
+        };
+        this.checklistService.saveList(importedSavedList);
+        this.clearImportInputs();
+      } else {
+        this.checklistService.askToOverwriteCurrentList()
+          .subscribe(result => {
+            if (result === 'yes') {
+              this.checklistService.setCheckedItems(importedCheckedItems);
+              this.clearImportInputs();
+            }
+          });
+      }
+    }
+  }
+
+  public export(): void {
     if (this.selectedListName === currentChecklistId) {
-      const now = new Date();
-      const time = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
       this.selectedSavedList = {
-        name: `Current List @ ${time}`,
-        checkedItems: this.checklistService.getCurrentCheckedItems()
+        name: `Current List at ${new Date().toTimeString()}`,
+        exportString: this.checklistService.getCurrentCheckedItems()
+          .toString().split(',').join('-')
       };
     } else {
-      this.selectedSavedList = this.checklistService.getSavedList(this.selectedListName);
+      const savedList = this.checklistService.getSavedList(this.selectedListName);
+      this.selectedSavedList = {
+        name: savedList.name,
+        exportString: savedList.checkedItems.toString().split(',').join('-')
+      };
     }
     this.selectedListName = undefined;
   }
 
-  log(it) {
-    console.log(it, Object.keys(it));
+  public load(): void {
+    this.checklistService.askToOverwriteCurrentList()
+      .subscribe(result => {
+        if (result === 'yes') {
+          this.checklistService.setCheckedItems(
+            this.checklistService.getSavedList(this.selectedListName).checkedItems
+          );
+          this.selectedListName = undefined;
+        }
+      });
   }
+
+  public delete(): void {
+    this.checklistService.deleteList(this.selectedListName);
+    this.selectedListName = undefined;
+  }
+
+  private clearImportInputs(): void {
+    this.importCode.nativeElement.value = '';
+    this.importCode.nativeElement.blur();
+    this.importName.nativeElement.value = '';
+    this.importName.nativeElement.blur();
+  }
+
 }

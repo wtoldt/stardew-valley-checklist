@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { YesNoDialogComponent } from './yes-no-dialog/yes-no-dialog.component';
+import { map } from 'rxjs/operators';
 
 export interface SavedList {
   name: string;
@@ -14,7 +17,8 @@ export class ChecklistService {
   private checkedItems$ = new BehaviorSubject<number[]>([]);
   private savedLists$ = new BehaviorSubject<SavedList[]>([]);
 
-  constructor() {
+  constructor(public dialog: MatDialog) {
+    // Load current & saved lists
     const loadedCurrentChecklist = localStorage.getItem(currentChecklistId);
     if (loadedCurrentChecklist) {
       const checkedItems =
@@ -25,9 +29,7 @@ export class ChecklistService {
 
     const loadedSavedLists = localStorage.getItem('savedLists');
     if (loadedSavedLists) {
-      const savedLists = JSON.parse(loadedSavedLists)
-        .map(l => l.checkedItems = l.checkedItems.map(id => +id));
-      this.savedLists$.next(savedLists);
+      this.savedLists$.next(JSON.parse(loadedSavedLists));
     }
 
     // Subscribe to our changes and write them to local storage
@@ -36,7 +38,8 @@ export class ChecklistService {
     });
 
     this.savedLists$.subscribe(savedLists => {
-      localStorage.setItem('savedLists', JSON.stringify(savedLists));
+      const stringifiedSavedLists = JSON.stringify(savedLists);
+      localStorage.setItem('savedLists', stringifiedSavedLists);
     });
   }
 
@@ -78,20 +81,75 @@ export class ChecklistService {
   }
 
   public saveCurrentList(name: string): void {
-    const now = new Date();
-    const dateString = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
-    const checkedCount = this.checkedItems$.getValue().length;
-    const defaultName = `${dateString} (${checkedCount}/122)`;
-    const listName = name ? name : defaultName;
-
-    const currentList: SavedList = {name: name, checkedItems: this.checkedItems$.getValue()};
-    const savedLists = [...this.savedLists$.getValue(), currentList];
-    this.savedLists$.next(savedLists);
+    const savedList = {
+      name,
+      checkedItems: this.checkedItems$.getValue()
+    };
+    this.saveList(savedList);
   }
 
-  public saveList(list: SavedList): void {
-    const savedLists = [...this.savedLists$.getValue(), list];
-    this.savedLists$.next(savedLists);
+  public saveList(savedList: SavedList): void {
+    // Check if the name already exists
+    const isUnique = this.savedLists$.getValue()
+      .map(sl => sl.name)
+      .filter(n => n === savedList.name)
+      .length === 0;
+    if (isUnique) {
+      const savedLists = [...this.savedLists$.getValue(), savedList];
+      this.savedLists$.next(savedLists);
+    } else {
+      this.askToOverwriteSave().subscribe(result => {
+        if (result === 'yes') {
+          this.overwriteSavedList(savedList);
+        }
+      });
+    }
+  }
+
+  public deleteList(name: string): void {
+    this.askToDeleteSave().subscribe(result => {
+      if (result === 'yes') {
+        const filteredSavedLists = this.savedLists$.getValue()
+          .filter(sl => sl.name !== name);
+        this.savedLists$.next(filteredSavedLists);
+      }
+    });
+  }
+
+  public askToOverwriteSave(): Observable<any> {
+    const dialogRef = this.dialog.open(YesNoDialogComponent, {
+      width: '250px',
+      data: { dialog: 'A save by this name already exists, do you want to overwrite?'}
+    });
+    return dialogRef.afterClosed();
+  }
+
+  public askToOverwriteCurrentList(): Observable<any> {
+    const dialogRef = this.dialog.open(YesNoDialogComponent, {
+      width: '250px',
+      data: { dialog: 'This will overwrite your current items, is that okay?'}
+    });
+    return dialogRef.afterClosed();
+  }
+
+  public generateDefaultName(): string {
+    const dateString = new Date().toISOString().substring(0, 10);
+    const checkedItemsCount = this.checkedItems$.getValue().length;
+    return `${dateString}`;
+  }
+
+  private overwriteSavedList(savedList: SavedList): void {
+    const savedLists = this.savedLists$.getValue()
+      .filter(sl => sl.name !== savedList.name);
+    this.savedLists$.next([...savedLists, savedList]);
+  }
+
+  private askToDeleteSave(): Observable<any> {
+    const dialogRef = this.dialog.open(YesNoDialogComponent, {
+      width: '250px',
+      data: { dialog: 'This will delete the save, are you sure?'}
+    });
+    return dialogRef.afterClosed();
   }
 
 }
