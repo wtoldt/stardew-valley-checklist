@@ -1,0 +1,30 @@
+<div>
+    <mat-toolbar>
+        Results: {{db.skills.length}}
+    </mat-toolbar>
+
+  <mat-card class="item-card" *ngFor="let skill of db.skills">
+    <mat-card-header class="dark"
+      [ngClass]="{'green-darken-4':(skillCompletionMap$ | async)?.get(skill.id).complete}">
+      <mat-card-title>
+        <mat-icon
+            *ngIf="(skillCompletionMap$ | async)?.get(skill.id).complete"
+            color="accent">
+          done_all
+        </mat-icon>
+        {{skill.name}}
+        ({{(skillCompletionMap$ | async)?.get(skill.id).checkedItems}}/
+        {{(skillCompletionMap$ | async)?.get(skill.id).requiredItems}})
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="container" style="padding-top:24px">
+        <button mat-button
+            (click)="setItemFiltersToSkillItems(skill.id)">
+          Show Items
+        </button>
+        <span class="example-spacer"></span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -23,6 +23,7 @@ import { BundleFilterToolbarComponent } from './bundle-list/bundle-filter-toolba
 import { YesNoDialogComponent } from './yes-no-dialog/yes-no-dialog.component';
 import { RoomListComponent } from './room-list/room-list.component';
 import { SeasonListComponent } from './season-list/season-list.component';
+import { SkillListComponent } from './skill-list/skill-list.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { SeasonListComponent } from './season-list/season-list.component';
     BundleFilterToolbarComponent,
     YesNoDialogComponent,
     RoomListComponent,
-    SeasonListComponent
+    SeasonListComponent,
+    SkillListComponent
   ],
   imports: [
     BrowserModule,

@@ -54,11 +54,18 @@
           <mat-icon matSuffix>code</mat-icon>
         </mat-form-field>
         <mat-form-field style="width: 90%;">
-          <input matInput #importName placeholder="Give it a name...">
+          <input matInput 
+              #importName 
+              (keyup.enter)="import()"
+              placeholder="Give it a name...">
           <mat-icon matSuffix>mode_edit</mat-icon>
-          <mat-hint>Unnamed imports will not be saved</mat-hint>
+          <mat-hint>Unnamed imports will overwrite current list</mat-hint>
         </mat-form-field>
-        <button mat-button color="primary">Import</button>
+        <button mat-button 
+            color="primary"
+            (click)="import()">
+          Import
+        </button>
       </div>
 
       <mat-toolbar>Export/Load/Delete</mat-toolbar>
@@ -177,7 +184,7 @@
       <mat-tab label="Bundles"><app-bundle-list></app-bundle-list></mat-tab>
       <mat-tab label="Rooms"><app-room-list></app-room-list></mat-tab>
       <mat-tab label="Seasons"><app-season-list></app-season-list></mat-tab>
-      <mat-tab label="Skills">Content 2</mat-tab>
+      <mat-tab label="Skills"><app-skill-list></app-skill-list></mat-tab>
     </mat-tab-group>
   </mat-sidenav-content>
 </mat-sidenav-container>
