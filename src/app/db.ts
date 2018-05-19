@@ -2547,6 +2547,8 @@ export const db: DataBase = {
   ]
 };
 
+export const totalItems = db.items.length;
+
 export const bundleMap: Map<number, Bundle> =
   db.bundles.reduce((accum: Map<number, Bundle>, b) => accum.set(b.id, b), new Map<number, Bundle>());
 

@@ -13,7 +13,7 @@
           <mat-card style="margin-bottom:24px;">
             <p>
               <strong>{{ (checkedItemsCount$ | async) }}</strong> 
-              of <strong>122</strong> 
+              of <strong>{{ totalItems }}</strong> 
               ({{ (checkedItemsPercent$ | async) }}%) Checked</p>
             <mat-slide-toggle 
                 #enableReset
@@ -70,11 +70,11 @@
               (selectionChange)="onSelectedListNameChange($event.value)">
             <mat-option [value]="undefined">None</mat-option>
             <mat-option [value]="currentChecklistId">
-              Current <small>({{(checkedItemsCount$ | async)}}/122)</small>
+              Current <small>({{(checkedItemsCount$ | async)}}/{{totalItems}})</small>
             </mat-option>
             <mat-option *ngFor="let savedList of savedLists$ | async" 
                 [value]="savedList.name">
-              {{savedList.name}} <small style="margin:0 24px 0 24px">({{(savedList.checkedItems.length)}}/122)</small>
+              {{savedList.name}} <small style="margin:0 24px 0 24px">({{(savedList.checkedItems.length)}}/{{totalItems}})</small>
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -140,7 +140,7 @@
                 (click)="onSelectedListNameChange(currentChecklistId)"
                 matTooltip="This isn't actually saved, but serves as a placeholder for your current list">
                 <h4 mat-line>
-                  Current <small style="margin:0 24px 0 24px">({{(checkedItemsCount$ | async)}}/122)</small>
+                  Current <small style="margin:0 24px 0 24px">({{(checkedItemsCount$ | async)}}/{{totalItems}})</small>
                 </h4>
             </mat-list-item>
             <mat-list-item 
@@ -148,7 +148,7 @@
                 (click)="onSelectedListNameChange(savedList.name)">
                 <h4 mat-line>
                   {{savedList.name}}
-                  <small style="margin:0 24px 0 24px">({{(savedList.checkedItems.length)}}/122)</small>
+                  <small style="margin:0 24px 0 24px">({{(savedList.checkedItems.length)}}/{{totalItems}})</small>
                 </h4>
             </mat-list-item>
           </mat-list>
@@ -165,7 +165,10 @@
         (click)="drawer.toggle()">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      <span>Stardew Valley Checklist</span>
+      <span>
+        Stardew Valley Checklist 
+        <small>({{(checkedItemsCount$ | async)}}/{{totalItems}})</small>
+      </span>
     </mat-toolbar>
     <mat-tab-group>
       <mat-tab label="Items">

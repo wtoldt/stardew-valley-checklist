@@ -75,6 +75,17 @@ export class ChecklistService {
     this.checkedItems$.next(checkedItems);
   }
 
+  public checkItems(ids: number[]): void {
+    const checkedItems = [...this.checkedItems$.getValue(), ...ids];
+    this.checkedItems$.next(checkedItems);
+  }
+
+  public unCheckItems(ids: number[]): void {
+    const checkedItems = this.checkedItems$.getValue()
+      .filter(i => !ids.includes(i));
+    this.checkedItems$.next(checkedItems);
+  }
+
   public setCheckedItems(ids: number[]): void {
     const checkedItems = [...ids];
     this.checkedItems$.next(checkedItems);

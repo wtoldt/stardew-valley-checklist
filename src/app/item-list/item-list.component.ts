@@ -1,5 +1,7 @@
 import { Component, Input} from '@angular/core';
 
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { YesNoDialogComponent } from '../yes-no-dialog/yes-no-dialog.component';
 import { db, DataBase, Item, Season, Bundle, Room, bundleMap, roomMap } from '../db';
 import { Observable, of, from, BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { map, filter, scan, take, tap, combineLatest as co } from 'rxjs/operators';
@@ -22,15 +24,19 @@ export class ItemListComponent {
   itemFilters$ = new BehaviorSubject<ItemFilters>(initialItemFilters);
   bundleMap: Map<number, Bundle> = bundleMap;
   roomMap: Map<number, Room> = roomMap;
+  private filteredItemsSnapshot: Item[] = [];
 
-  constructor(private checklistService: ChecklistService) {
+  constructor(
+        private checklistService: ChecklistService,
+        public dialog: MatDialog) {
     this.db = db;
     const filteredList = combineLatest(
       of(db.items),
       this.itemFilters$,
       (items, itemFilters) => this.itemsFilter(items, itemFilters)
     ).pipe<Item[]>(
-      tap(i => this.resultCount$.next(i.length))
+      tap(i => this.resultCount$.next(i.length)),
+      tap(fl => this.filteredItemsSnapshot = fl)
     );
     this.filteredItems$ = combineLatest(
       filteredList,
@@ -52,6 +58,32 @@ export class ItemListComponent {
 
   onItemFiltersChange(itemFilters: ItemFilters): void {
     this.itemFilters$.next(itemFilters);
+  }
+
+  checkFilteredItems(): void {
+    const ids = this.filteredItemsSnapshot.map(i => i.id);
+    if (ids.length >= 10) {
+      this.askToCheckAll().pipe(take(1)).subscribe(result => {
+        if (result === 'yes') {
+          this.checklistService.checkItems(ids);
+        }
+      });
+    } else {
+      this.checklistService.checkItems(ids);
+    }
+  }
+
+  unCheckFilteredItems(): void {
+    const ids = this.filteredItemsSnapshot.map(i => i.id);
+    if (ids.length >= 10) {
+      this.askToUnCheckAll().pipe(take(1)).subscribe(result => {
+        if (result === 'yes') {
+          this.checklistService.unCheckItems(ids);
+        }
+      });
+    } else {
+      this.checklistService.unCheckItems(ids);
+    }
   }
 
   isChecked(id: number): boolean {
@@ -155,7 +187,26 @@ export class ItemListComponent {
     return filteredItems;
   }
 
-  contains (array: any[], item: any): boolean {
+  private askToCheckAll(): Observable<any> {
+    return this.askToCheck(
+      'You\'re checking a lot of items, this cannot be undone. Are you okay with that?'
+    );
+  }
+
+  private askToUnCheckAll(): Observable<any> {
+    return this.askToCheck(
+      'You\'re unchecking a lot of items, this cannot be undone. Are you okay with that?'
+    );
+  }
+
+  private askToCheck(dialog: string): Observable<any> {
+    return this.dialog.open(YesNoDialogComponent, {
+      width: '250px',
+      data: { dialog }
+    }).afterClosed();
+  }
+
+  private contains (array: any[], item: any): boolean {
     return array.indexOf(item) > -1;
   }
 }

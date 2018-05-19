@@ -3,6 +3,7 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
 import { Observable, BehaviorSubject } from 'rxjs';
 import { ChecklistService, SavedList, currentChecklistId } from '../checklist.service';
 import { map, withLatestFrom, publishReplay } from 'rxjs/operators';
+import { totalItems } from '../db';
 
 @Component({
   selector: 'app-nav',
@@ -25,6 +26,7 @@ export class NavComponent {
   public currentChecklistId = currentChecklistId;
   public selectedSavedList: {name: string, exportString: string};
   public exportString = '';
+  public totalItems = totalItems;
 
   constructor(
       private breakpointObserver: BreakpointObserver,
@@ -34,7 +36,7 @@ export class NavComponent {
       map(i => i.length)
     );
     this.checkedItemsPercent$ = this.checkedItems$.pipe(
-      map(i => +(i.length / 122 * 100).toFixed(0))
+      map(i => +(i.length / totalItems * 100).toFixed(0))
     );
     this.savedLists$ = checklistService.getSavedLists();
     this.savedListNames$ = checklistService.getSavedLists().pipe(

@@ -4,7 +4,10 @@
       (bundleFiltersChange)="onBundleFiltersChange($event)">
   </app-bundle-filter-toolbar>
 
-  Results: {{(filteredBundles$ | async).length}}
+  <mat-toolbar>
+      Results: {{(filteredBundles$ | async).length}}
+  </mat-toolbar>
+
   <mat-card class="item-card" *ngFor="let bundle of filteredBundles$ | async">
     <mat-card-header class="dark">
       <mat-card-title>{{bundle.name}}</mat-card-title>
