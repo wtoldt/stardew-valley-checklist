@@ -37,7 +37,11 @@ export class ItemBundleFilterChipComponent {
     if (this.itemBundleFilter.selectedBundles !== []) {
       const selectedBundleNames = this.itemBundleFilter.selectedBundles
         .map(id => this.getBundleName(id));
-      content = content + `${selectedBundleNames.join(' ')} `;
+      if (this.itemBundleFilter.selectedBundles.length <= 2) {
+        content = content + `${selectedBundleNames.join(' ')} `;
+      } else {
+        content = content + `${this.itemBundleFilter.selectedBundles.length} Bundles `;
+      }
     }
     if (this.itemBundleFilter.containsAnyOnly !== this.blankBundleFilter.containsAnyOnly) {
       content = content + 'only ';

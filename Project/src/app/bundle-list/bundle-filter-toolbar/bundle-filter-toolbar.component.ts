@@ -55,7 +55,7 @@ export class BundleFilterToolbarComponent {
     this.bundleFiltersChange.emit(newBundleFilters);
   }
 
-  resetItemFilters(): void {
+  resetBundleFilters(): void {
     this.bundleFiltersChange.emit(initialBundleFilters);
   }
 }

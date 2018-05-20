@@ -1,6 +1,12 @@
 <mat-toolbar color="accent">
   <mat-toolbar-row style="height:38px;">
-    Filters <button mat-button color="warn" (click)="resetItemFilters()">Reset All</button>
+    Bundle Filters <button mat-button color="warn" (click)="resetBundleFilters()">Reset All</button>
+    <mat-chip-list>
+      <app-bundle-filter-chip
+          [bundleFilters]="bundleFilters"
+          (bundleFiltersClear)="resetBundleFilters()">
+      </app-bundle-filter-chip>
+    </mat-chip-list>
   </mat-toolbar-row>
   <mat-toolbar-row style="height:150px;">
 
@@ -8,6 +14,7 @@
         <mat-form-field class="search-input">
           <input matInput type="text"
               #nameSearchInput
+              [value]="bundleFilters?.nameSearchString"
               placeholder="Search Name..."
               (keyup.enter)="onNameSearchEnter($event)"/>
           <button mat-button 
@@ -20,7 +27,9 @@
         <span class="example-spacer"></span>
       
         <mat-form-field class="search-input">
-          <input matInput type="text" placeholder="Search Reward..." #rewardSearchInput
+          <input matInput type="text" placeholder="Search Reward..." 
+              #rewardSearchInput
+              [value]="bundleFilters?.rewardSearchString"
               (keyup.enter)="onRewardSearchEnter($event)"/>
           <button mat-button 
               *ngIf="rewardSearchInput.value.length > 0" 

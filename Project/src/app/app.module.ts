@@ -28,6 +28,7 @@ import { ItemSearchFilterChipComponent } from './item-list/item-filter-toolbar/i
 import { ItemSeasonFilterChipComponent } from './item-list/item-filter-toolbar/item-filters/item-search-filter/item-season-filter-chip/item-season-filter-chip.component';
 import { ItemSkillFilterChipComponent } from './item-list/item-filter-toolbar/item-filters/item-search-filter/item-skill-filter-chip/item-skill-filter-chip.component';
 import { ItemBundleFilterChipComponent } from './item-list/item-filter-toolbar/item-filters/item-search-filter/item-bundle-filter-chip/item-bundle-filter-chip.component';
+import { BundleFilterChipComponent } from './bundle-list/bundle-filter-toolbar/bundle-filters/bundle-filter-chip.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ItemBundleFilterChipComponent } from './item-list/item-filter-toolbar/i
     ItemSearchFilterChipComponent,
     ItemSeasonFilterChipComponent,
     ItemSkillFilterChipComponent,
-    ItemBundleFilterChipComponent
+    ItemBundleFilterChipComponent,
+    BundleFilterChipComponent
   ],
   imports: [
     BrowserModule,
