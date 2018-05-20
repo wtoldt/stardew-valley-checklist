@@ -956,7 +956,7 @@ export const db: DataBase = {
     {
       'id': 55,
       'name': 'Apple',
-      'source': 'Gathered from Apple Trees during Fall. Fodder Bundle requires 3.',
+      'source': 'Gathered from Apple Trees during Fall.',
       'seasons': [
         'fall'
       ],
@@ -2228,8 +2228,8 @@ export const db: DataBase = {
     },
     {
       'id': 128,
-      'name': 'Apple',
-      'source': 'Gathered from Apple Trees during Fall. Fodder Bundle requires 3.',
+      'name': 'Apple (3)',
+      'source': 'Gathered from Apple Trees during Fall.',
       'seasons': [
         'fall'
       ],
@@ -2558,3 +2558,9 @@ export const bundleItemMap: Map<number, Item[]> =
     accum.set(bundleId, [...items, item]);
     return accum;
   }, new Map<number, Item[]>());
+
+export const seasonItemMap: Map<string, Item[]> =
+  db.seasons.reduce((accum: Map<string, Item[]>, season) => {
+    const items = db.items.filter(i => i.seasons.includes(season.id));
+    return accum.set(season.id, items);
+  }, new Map<string, Item[]>());

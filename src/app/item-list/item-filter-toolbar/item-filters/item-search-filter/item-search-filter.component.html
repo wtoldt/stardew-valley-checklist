@@ -1,7 +1,10 @@
 <div class="container">
   <span class="example-spacer"></span>
   <mat-form-field class="search-input">
-    <input matInput type="text" placeholder="Search Name..." #nameSearchInput
+    <input matInput type="text"
+        #nameSearchInput
+        placeholder="Search Name..." 
+        [value]="itemSearchFilter.nameString"
         (keyup.enter)="onNameSearchEnter($event)"/>
     <button mat-button 
         *ngIf="nameSearchInput.value.length > 0" 
@@ -13,7 +16,10 @@
   <span class="example-spacer"></span>
 
   <mat-form-field class="search-input">
-    <input matInput type="text" placeholder="Search Description..." #sourceSearchInput
+    <input matInput type="text"
+        #sourceSearchInput
+        placeholder="Search Description..."
+        [value]="itemSearchFilter.sourceString"
         (keyup.enter)="onSourceSearchEnter($event)"/>
     <button mat-button 
         *ngIf="sourceSearchInput.value.length > 0" 

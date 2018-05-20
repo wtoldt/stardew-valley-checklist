@@ -3,7 +3,7 @@ import { ChecklistService, RoomCompletionStatus } from '../checklist.service';
 import { FilterService } from '../filter.service';
 import { LayoutService } from '../layout.service';
 
-import { DataBase, db, roomMap } from '../db';
+import { DataBase, db, roomMap, bundleItemMap } from '../db';
 import { ItemBundleFilter, initialItemFilters } from '../item-list/item-filter-toolbar/item-filters';
 import { BundleFilters, initialBundleFilters } from '../bundle-list/bundle-filter-toolbar/bundle-filters';
 import { Observable, of, combineLatest } from 'rxjs';
@@ -47,6 +47,19 @@ export class RoomListComponent {
     };
     this.filterService.setSelectedBundleFilters(bundleFilters);
     this.layoutService.goToBundleTab();
+  }
+
+  getBundlesInRoom(roomId: number): number {
+    return db.bundles.filter(b => b.room === roomId).length;
+  }
+
+  getItemsInRoom(roomId: number): number {
+    const roomBundles = db.bundles.filter(b => b.room === roomId);
+    return roomBundles
+      .map(b => db.items.filter(i => i.bundles.includes(b.id)))
+      .reduce((accum, curVal) => {
+        return [...accum, ...curVal];
+      }, []).length;
   }
 
 }

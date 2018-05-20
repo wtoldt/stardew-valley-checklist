@@ -23,14 +23,27 @@
         <mat-chip>{{room.reward}}</mat-chip>
       </div>
       <mat-divider></mat-divider>
+      <div class="container">
+          <div>
+              Bundles In {{room.name}}: <br />
+              <mat-chip>{{getBundlesInRoom(room.id)}}</mat-chip>
+          </div>
+          <span class="example-spacer"></span>
+          <div>
+              Total Items In {{room.name}}: <br />
+              <mat-chip>{{getItemsInRoom(room.id)}}</mat-chip>
+          </div>
+          <span class="example-spacer"></span>
+        </div>
+      <mat-divider></mat-divider>
       <div class="container" style="padding-top:24px">
-        <button mat-button
-            (click)="setItemFiltersToRoomItems(room.id)">
-          Show Items
-        </button>
         <button mat-button
             (click)="setBundleFiltersToRoomBundles(room.id)">
           Show Bundles
+        </button>
+        <button mat-button
+            (click)="setItemFiltersToRoomItems(room.id)">
+          Show Items
         </button>
         <span class="example-spacer"></span>
       </div>

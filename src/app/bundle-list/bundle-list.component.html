@@ -1,6 +1,6 @@
 <div>
   <app-bundle-filter-toolbar
-      [bundleFilters]="bundleFilters$"
+      [bundleFilters]="bundleFilters$ | async"
       (bundleFiltersChange)="onBundleFiltersChange($event)">
   </app-bundle-filter-toolbar>
 

@@ -6,7 +6,9 @@
 
       <div class="container" style="overflow-x: auto">
         <mat-form-field class="search-input">
-          <input matInput type="text" placeholder="Search Name..." #nameSearchInput
+          <input matInput type="text"
+              #nameSearchInput
+              placeholder="Search Name..."
               (keyup.enter)="onNameSearchEnter($event)"/>
           <button mat-button 
               *ngIf="nameSearchInput.value.length > 0" 

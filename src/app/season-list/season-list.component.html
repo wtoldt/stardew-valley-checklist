@@ -18,10 +18,28 @@
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
+      <div class="container">
+        <div>
+            Items In {{season.name}}: <br />
+            <mat-chip>{{getItemsInSeason(season.id)}}</mat-chip>
+        </div>
+        <span class="example-spacer"></span>
+        <div>
+            Items <strong>Only</strong> In {{season.name}}: <br />
+            <mat-chip>{{getItemsOnlyInSeason(season.id)}}</mat-chip>
+        </div>
+        <span class="example-spacer"></span>
+      </div>
+      <mat-divider></mat-divider>
       <div class="container" style="padding-top:24px">
         <button mat-button
             (click)="setItemFiltersToSeasonItems(season.id)">
-          Show Items
+          Show {{season.name}} Items
+        </button>
+        <span class="example-spacer"></span>
+        <button mat-button
+            (click)="setItemFiltersToSeasonItems(season.id, false)">
+          Show {{season.name}} Only Items
         </button>
         <span class="example-spacer"></span>
       </div>
