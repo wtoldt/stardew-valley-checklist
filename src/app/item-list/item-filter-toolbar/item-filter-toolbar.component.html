@@ -1,6 +1,24 @@
 <mat-toolbar color="accent">
   <mat-toolbar-row style="height:38px;">
-    Filters <button mat-button color="warn" (click)="resetItemFilters()">Reset All</button>
+    Item Filters <button mat-button color="warn" (click)="resetItemFilters()">Reset All</button>
+    <mat-chip-list>
+      <app-item-search-filter-chip
+          [itemSearchFilter]="itemFilters?.searchFilter"
+          (itemSearchFilterClear)="onItemSearchFilterChange($event)">
+      </app-item-search-filter-chip>
+      <app-item-season-filter-chip
+          [itemSeasonFilter]="itemFilters?.seasonFilter"
+          (itemSeasonFilterClear)="onItemSeasonFilterChange($event)">
+      </app-item-season-filter-chip>
+      <app-item-skill-filter-chip
+          [itemSkillFilter]="itemFilters?.skillFilter"
+          (itemSkillFilterClear)="onItemSkillFilterChange($event)">
+      </app-item-skill-filter-chip>
+      <app-item-bundle-filter-chip
+          [itemBundleFilter]="itemFilters?.bundleFilter"
+          (itemBundleFilterClear)="onItemBundleFilterChange($event)">
+      </app-item-bundle-filter-chip>
+    </mat-chip-list>
   </mat-toolbar-row>
   <mat-toolbar-row style="height:150px;">
     <mat-tab-group style="width:100%;">

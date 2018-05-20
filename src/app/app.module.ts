@@ -24,6 +24,10 @@ import { YesNoDialogComponent } from './yes-no-dialog/yes-no-dialog.component';
 import { RoomListComponent } from './room-list/room-list.component';
 import { SeasonListComponent } from './season-list/season-list.component';
 import { SkillListComponent } from './skill-list/skill-list.component';
+import { ItemSearchFilterChipComponent } from './item-list/item-filter-toolbar/item-filters/item-search-filter/item-search-filter-chip/item-search-filter-chip.component';
+import { ItemSeasonFilterChipComponent } from './item-list/item-filter-toolbar/item-filters/item-search-filter/item-season-filter-chip/item-season-filter-chip.component';
+import { ItemSkillFilterChipComponent } from './item-list/item-filter-toolbar/item-filters/item-search-filter/item-skill-filter-chip/item-skill-filter-chip.component';
+import { ItemBundleFilterChipComponent } from './item-list/item-filter-toolbar/item-filters/item-search-filter/item-bundle-filter-chip/item-bundle-filter-chip.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +44,11 @@ import { SkillListComponent } from './skill-list/skill-list.component';
     YesNoDialogComponent,
     RoomListComponent,
     SeasonListComponent,
-    SkillListComponent
+    SkillListComponent,
+    ItemSearchFilterChipComponent,
+    ItemSeasonFilterChipComponent,
+    ItemSkillFilterChipComponent,
+    ItemBundleFilterChipComponent
   ],
   imports: [
     BrowserModule,
