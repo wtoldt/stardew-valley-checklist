@@ -33,12 +33,14 @@ export interface SkillCompletionStatus {
   checkedItems: number;
 }
 export const currentChecklistId = '28c8cdb62903833cfe9f7d6f4c9bc8e9';
+export const currentChecklistNameId = '28c8cbd92909833cfe3f7d6f4c9bc8e9';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChecklistService {
   private checkedItems$ = new BehaviorSubject<number[]>([]);
+  private checklistName$ = new BehaviorSubject<string>('');
   private savedLists$ = new BehaviorSubject<SavedList[]>([]);
   private bundleCompletionMap$: Observable<Map<number, BundleCompletionStatus>>;
   private roomCompletionMap$: Observable<Map<number, RoomCompletionStatus>>;
@@ -55,11 +57,17 @@ export class ChecklistService {
       this.checkedItems$.next(checkedItems);
     }
 
+    const loadedChecklistName = localStorage.getItem(currentChecklistNameId);
+    if (loadedChecklistName) {
+      this.checklistName$.next(loadedChecklistName);
+    }
+
     const loadedSavedLists = localStorage.getItem('savedLists');
     if (loadedSavedLists) {
       this.savedLists$.next(JSON.parse(loadedSavedLists));
     }
 
+    // Create convenience maps
     this.bundleCompletionMap$ = this.checkedItems$.pipe(
       map(items => {
         return db.bundles.map(b => {
@@ -133,6 +141,10 @@ export class ChecklistService {
       localStorage.setItem(currentChecklistId, JSON.stringify(checkedItems));
     });
 
+    this.checklistName$.subscribe(checklistName => {
+      localStorage.setItem(currentChecklistNameId, checklistName);
+    });
+
     this.savedLists$.subscribe(savedLists => {
       const stringifiedSavedLists = JSON.stringify(savedLists);
       localStorage.setItem('savedLists', stringifiedSavedLists);
@@ -141,6 +153,10 @@ export class ChecklistService {
 
   public getCheckedItems(): Observable<number[]> {
     return this.checkedItems$;
+  }
+
+  public getChecklistName(): Observable<string> {
+    return this.checklistName$;
   }
 
   public getBundleCompletionMap(): Observable<Map<number, BundleCompletionStatus>> {
@@ -203,12 +219,17 @@ export class ChecklistService {
     this.checkedItems$.next(checkedItems);
   }
 
+  public setChecklistName(name: string): void {
+    this.checklistName$.next(name);
+  }
+
   public saveCurrentList(name: string): void {
     const savedList = {
       name,
       checkedItems: this.checkedItems$.getValue()
     };
     this.saveList(savedList);
+    this.checklistName$.next(savedList.name);
   }
 
   public saveList(savedList: SavedList): void {

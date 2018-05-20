@@ -33,6 +33,7 @@
           <input matInput 
               #currentListName
               placeholder="Checklist Name..."
+              [value]="checklistName$  | async"
               (keyup.enter)="saveCurrentList(currentListName.value)">
           <mat-hint>Save the current checklist</mat-hint>
           <button mat-button matSuffix

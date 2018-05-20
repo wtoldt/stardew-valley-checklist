@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { ChecklistService, SavedList, currentChecklistId } from '../checklist.service';
-import { map, withLatestFrom, publishReplay } from 'rxjs/operators';
+import { map, withLatestFrom, publishReplay, take } from 'rxjs/operators';
 import { totalItems } from '../db';
 import { LayoutService } from '../layout.service';
 
@@ -19,6 +19,7 @@ export class NavComponent {
   @ViewChild('importCode')
   public importCode: ElementRef;
   public checkedItems$: Observable<number[]>;
+  public checklistName$: Observable<string>;
   public checkedItemsCount$: Observable<number>;
   public checkedItemsPercent$: Observable<number>;
   public savedLists$: Observable<SavedList[]>;
@@ -45,6 +46,7 @@ export class NavComponent {
     this.savedListNames$ = checklistService.getSavedLists().pipe(
       map(sl => sl.map(i => i.name))
     );
+    this.checklistName$ = checklistService.getChecklistName();
 
     layoutService.currentTab$.subscribe(index => this.selectedTabIndex = index);
   }
@@ -81,7 +83,7 @@ export class NavComponent {
         this.clearImportInputs();
       } else {
         this.checklistService.askToOverwriteCurrentList()
-          .subscribe(result => {
+          .pipe(take(1)).subscribe(result => {
             if (result === 'yes') {
               this.checklistService.setCheckedItems(importedCheckedItems);
               this.clearImportInputs();
@@ -110,11 +112,13 @@ export class NavComponent {
 
   public load(): void {
     this.checklistService.askToOverwriteCurrentList()
-      .subscribe(result => {
+      .pipe(take(1)).subscribe(result => {
         if (result === 'yes') {
+          const savedList = this.checklistService.getSavedList(this.selectedListName);
           this.checklistService.setCheckedItems(
-            this.checklistService.getSavedList(this.selectedListName).checkedItems
+            savedList.checkedItems
           );
+          this.checklistService.setChecklistName(savedList.name);
           this.selectedListName = undefined;
         }
       });
