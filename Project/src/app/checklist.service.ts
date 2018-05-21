@@ -32,6 +32,11 @@ export interface SkillCompletionStatus {
   requiredItems: number;
   checkedItems: number;
 }
+export type CompletionStatus =
+  BundleCompletionStatus |
+  RoomCompletionStatus |
+  SeasonCompletionStatus |
+  SkillCompletionStatus;
 export const currentChecklistId = '28c8cdb62903833cfe9f7d6f4c9bc8e9';
 export const currentChecklistNameId = '28c8cbd92909833cfe3f7d6f4c9bc8e9';
 
