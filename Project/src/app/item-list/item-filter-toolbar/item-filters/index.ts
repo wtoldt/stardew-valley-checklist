@@ -1,5 +1,6 @@
 
 export interface ItemSearchFilter {
+  hideChecked: boolean;
   nameString: string;
   sourceString: string;
 }
@@ -32,6 +33,7 @@ export interface ItemFilters {
 
 export const initialItemFilters: ItemFilters = {
   searchFilter: {
+    hideChecked: false,
     nameString: '',
     sourceString: ''
   },

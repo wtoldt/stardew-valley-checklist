@@ -5,12 +5,20 @@ import { ItemSearchFilter, initialItemFilters } from '../..';
   selector: 'app-item-search-filter-chip',
   template: `
     <mat-chip
-        *ngIf="show()"
+        *ngIf="showHideChecked()"
         [selected]="'true'"
-        (removed)="remove()"
+        (removed)="removeHideChecked()"
         color="primary">
-      {{ content() }}
+      Hide Checked
       <mat-icon matChipRemove>cancel</mat-icon>
+    </mat-chip>
+    <mat-chip
+        *ngIf="showOther()"
+        [selected]="'true'"
+        (removed)="removeOther()"
+        color="primary">
+    {{ content() }}
+    <mat-icon matChipRemove>cancel</mat-icon>
     </mat-chip>
   `,
   styles: []
@@ -24,9 +32,16 @@ export class ItemSearchFilterChipComponent {
 
   constructor() { }
 
-  show() {
-    return JSON.stringify(this.blankSearchFilter)
-      !== JSON.stringify(this.itemSearchFilter);
+  showHideChecked(): boolean {
+    return this.itemSearchFilter.hideChecked !==
+      this.blankSearchFilter.hideChecked;
+  }
+
+  showOther(): boolean {
+    const foo =
+      this.itemSearchFilter.nameString !== ''
+      || this.itemSearchFilter.sourceString !== '';
+    return foo;
   }
   content() {
     let content = '';
@@ -39,8 +54,19 @@ export class ItemSearchFilterChipComponent {
     return content;
   }
 
-  remove(): void {
-    this.itemSearchFilterClear.emit(this.blankSearchFilter);
+  removeHideChecked(): void {
+    this.itemSearchFilterClear.emit({
+      ...this.itemSearchFilter,
+      hideChecked: this.blankSearchFilter.hideChecked
+    });
+  }
+
+  removeOther(): void {
+    this.itemSearchFilterClear.emit({
+      ...this.itemSearchFilter,
+      nameString: this.blankSearchFilter.nameString,
+      sourceString: this.blankSearchFilter.sourceString
+    });
   }
 
 }

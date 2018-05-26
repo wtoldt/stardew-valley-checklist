@@ -48,4 +48,9 @@ export class ItemSearchFilterComponent {
     this.sourceSearchInput.nativeElement.blur();
   }
 
+  onHideCheckedChanged(checked: boolean): void {
+    const newItemSearchFilter = {...this.itemSearchFilter, hideChecked: checked};
+    this.itemSearchFilterChange.emit(newItemSearchFilter);
+  }
+
 }

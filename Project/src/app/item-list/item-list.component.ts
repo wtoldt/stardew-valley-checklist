@@ -112,6 +112,10 @@ export class ItemListComponent {
     let filteredItems = [...items];
 
     // Search Filter
+    if (itemFilters.searchFilter.hideChecked) {
+      filteredItems = filteredItems
+        .filter(i => !this.isChecked(i.id));
+    }
     if (itemFilters.searchFilter.nameString.trim() !== '') {
       const nameString = itemFilters.searchFilter.nameString.toLowerCase();
       filteredItems = filteredItems

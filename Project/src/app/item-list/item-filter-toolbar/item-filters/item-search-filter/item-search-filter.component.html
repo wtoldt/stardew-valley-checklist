@@ -1,5 +1,15 @@
 <div class="container">
+  <div style="margin-top:24px">
+    <mat-slide-toggle
+        [checked]="itemSearchFilter.hideChecked"
+        (change)="onHideCheckedChanged($event.checked)"
+        color="primary">
+      Hide Checked
+    </mat-slide-toggle>
+  </div>
+
   <span class="example-spacer"></span>
+
   <mat-form-field class="search-input">
     <input matInput type="text"
         #nameSearchInput
