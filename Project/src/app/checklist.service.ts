@@ -199,29 +199,29 @@ export class ChecklistService {
 
   public checkItem(id: number): void {
     const checkedItems = [...this.checkedItems$.getValue(), id];
-    this.checkedItems$.next(checkedItems);
+    this.checkedItems$.next(Array.from(new Set(checkedItems)));
   }
 
   public unCheckItem(id: number): void {
     const checkedItems = this.checkedItems$.getValue()
       .filter(i => i !== id);
-    this.checkedItems$.next(checkedItems);
+    this.checkedItems$.next(Array.from(new Set(checkedItems)));
   }
 
   public checkItems(ids: number[]): void {
     const checkedItems = [...this.checkedItems$.getValue(), ...ids];
-    this.checkedItems$.next(checkedItems);
+    this.checkedItems$.next(Array.from(new Set(checkedItems)));
   }
 
   public unCheckItems(ids: number[]): void {
     const checkedItems = this.checkedItems$.getValue()
       .filter(i => !ids.includes(i));
-    this.checkedItems$.next(checkedItems);
+    this.checkedItems$.next(Array.from(new Set(checkedItems)));
   }
 
   public setCheckedItems(ids: number[]): void {
     const checkedItems = [...ids];
-    this.checkedItems$.next(checkedItems);
+    this.checkedItems$.next(Array.from(new Set(checkedItems)));
   }
 
   public setChecklistName(name: string): void {
