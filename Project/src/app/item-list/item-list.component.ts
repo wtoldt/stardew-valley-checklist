@@ -4,7 +4,7 @@ import { MatDialog, PageEvent } from '@angular/material';
 import { YesNoDialogComponent } from '../yes-no-dialog/yes-no-dialog.component';
 import { db, DataBase, Item, Season, Bundle, Room, bundleMap, roomMap } from '../db';
 import { Observable, of, BehaviorSubject, combineLatest } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
+import { take, tap, map } from 'rxjs/operators';
 import { ItemFilters } from './item-filter-toolbar/item-filters';
 import { ChecklistService } from '../checklist.service';
 import { FilterService } from '../filter.service';
@@ -32,19 +32,13 @@ export class ItemListComponent {
         public dialog: MatDialog) {
 
     this.itemFilters$ = filterService.getSelectedItemFilters();
-    const filteredList = combineLatest(
-      of(db.items),
-      this.itemFilters$,
-      (items, itemFilters) => this.itemsFilter(items, itemFilters)
-    ).pipe<Item[]>(
+    const filteredList = combineLatest(of(db.items), this.itemFilters$).pipe(
+      map(([items, itemFilters]) => this.itemsFilter(items, itemFilters)),
       tap(fl => this.resultCount$.next(fl.length)),
       tap(fl => this.filteredItemsSnapshot = fl)
     );
-    this.filteredItems$ = combineLatest(
-      filteredList,
-      this.pageIndex$,
-      this.pageSize$,
-      (ar, i, s) => ar.slice(i * s, (i * s) + s)
+    this.filteredItems$ = combineLatest(filteredList, this.pageIndex$, this.pageSize$).pipe(
+      map(([ar, i, s]) => ar.slice(i * s, (i * s) + s))
     );
   }
 
