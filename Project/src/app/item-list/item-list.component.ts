@@ -32,12 +32,15 @@ export class ItemListComponent {
         public dialog: MatDialog) {
 
     this.itemFilters$ = filterService.getSelectedItemFilters();
-    const filteredList = combineLatest(of(db.items), this.itemFilters$).pipe(
+
+    const filteredList$ = combineLatest(of(db.items), this.itemFilters$).pipe(
       map(([items, itemFilters]) => this.itemsFilter(items, itemFilters)),
       tap(fl => this.resultCount$.next(fl.length)),
       tap(fl => this.filteredItemsSnapshot = fl)
     );
-    this.filteredItems$ = combineLatest(filteredList, this.pageIndex$, this.pageSize$).pipe(
+
+    // Handle pagination
+    this.filteredItems$ = combineLatest(filteredList$, this.pageIndex$, this.pageSize$).pipe(
       map(([ar, i, s]) => ar.slice(i * s, (i * s) + s))
     );
   }
@@ -99,6 +102,8 @@ export class ItemListComponent {
   }
 
   private itemsFilter(items: Item[], itemFilters: ItemFilters): Item[] {
+    // The order the filters are applied corresponds to the order they appear in the interface
+    // TODO: Instead of a hard coded order, apply filters in order they were selected
     let filteredItems = [...items];
 
     // Search Filter
@@ -109,12 +114,12 @@ export class ItemListComponent {
     if (itemFilters.searchFilter.nameString.trim() !== '') {
       const nameString = itemFilters.searchFilter.nameString.toLowerCase();
       filteredItems = filteredItems
-        .filter(i => i.name.toLowerCase().indexOf(nameString) > -1);
+        .filter(i => i.name.toLowerCase().includes(nameString));
     }
     if (itemFilters.searchFilter.sourceString.trim() !== '') {
       const sourceString = itemFilters.searchFilter.sourceString.toLowerCase();
       filteredItems = filteredItems
-        .filter(i => i.source.toLowerCase().indexOf(sourceString) > -1);
+        .filter(i => i.source.toLowerCase().includes(sourceString));
     }
 
     // Season Filter
