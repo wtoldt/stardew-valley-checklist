@@ -133,7 +133,7 @@ export class ItemListComponent {
         filteredItems = filteredItems
           .filter(i => i.seasons.filter(s => selectedSeasons.includes(s)).length > 0);
       }
-      // Contains Any.Only
+      // Contains Any/Only
       if (itemFilters.seasonFilter.containsAnyOnly) {
         filteredItems = filteredItems;
       } else {
@@ -153,7 +153,7 @@ export class ItemListComponent {
         filteredItems = filteredItems
           .filter(i => i.skills.filter(s => selectedSkills.includes(s)).length > 0);
       }
-      // Contains Any.Only
+      // Contains Any/Only
       if (itemFilters.skillFilter.containsAnyOnly) {
         filteredItems = filteredItems;
       } else {
@@ -179,7 +179,7 @@ export class ItemListComponent {
         filteredItems = filteredItems
           .filter(i => i.bundles.filter(b => selectedBundles.includes(b)).length > 0);
       }
-      // Contains Any.Only
+      // Contains Any/Only
       if (itemFilters.bundleFilter.containsAnyOnly) {
         filteredItems = filteredItems;
       } else {
