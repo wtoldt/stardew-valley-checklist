@@ -7,21 +7,21 @@ export interface ItemSearchFilter {
 
 export interface ItemSeasonFilter {
   selectedSeasons: string[];
-  andOr: boolean;
-  containsAnyOnly: boolean;
+  andOr: boolean; // True = and, false = or
+  containsAnyOnly: boolean; // True = any, false = only
 }
 
 export interface ItemSkillFilter {
   selectedSkills: string[];
-  andOr: boolean;
-  containsAnyOnly: boolean;
+  andOr: boolean; // True = and, false = or
+  containsAnyOnly: boolean; // True = any, false = only
 }
 
 export interface ItemBundleFilter {
   selectedRoom: number;
   selectedBundles: number[];
-  andOr: boolean;
-  containsAnyOnly: boolean;
+  andOr: boolean; // True = and, false = or
+  containsAnyOnly: boolean; // True = any, false = only
 }
 
 export interface ItemFilters {
