@@ -1,12 +1,11 @@
 import { Component, Input} from '@angular/core';
 
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { MatDialog, PageEvent } from '@angular/material';
 import { YesNoDialogComponent } from '../yes-no-dialog/yes-no-dialog.component';
 import { db, DataBase, Item, Season, Bundle, Room, bundleMap, roomMap } from '../db';
-import { Observable, of, from, BehaviorSubject, Subject, combineLatest } from 'rxjs';
-import { map, filter, scan, take, tap, combineLatest as co } from 'rxjs/operators';
-import { MatSelectChange, PageEvent } from '@angular/material';
-import { ItemFilters, initialItemFilters } from './item-filter-toolbar/item-filters';
+import { Observable, of, BehaviorSubject, combineLatest } from 'rxjs';
+import { take, tap } from 'rxjs/operators';
+import { ItemFilters } from './item-filter-toolbar/item-filters';
 import { ChecklistService } from '../checklist.service';
 import { FilterService } from '../filter.service';
 @Component({
@@ -22,7 +21,6 @@ export class ItemListComponent {
   pageSize$ = new BehaviorSubject<number>(15);
   db: DataBase = db;
   filteredItems$: Observable<Item[]>;
-  // itemFilters$ = new BehaviorSubject<ItemFilters>(initialItemFilters);
   itemFilters$: Observable<ItemFilters>;
   bundleMap: Map<number, Bundle> = bundleMap;
   roomMap: Map<number, Room> = roomMap;
@@ -39,7 +37,7 @@ export class ItemListComponent {
       this.itemFilters$,
       (items, itemFilters) => this.itemsFilter(items, itemFilters)
     ).pipe<Item[]>(
-      tap(i => this.resultCount$.next(i.length)),
+      tap(fl => this.resultCount$.next(fl.length)),
       tap(fl => this.filteredItemsSnapshot = fl)
     );
     this.filteredItems$ = combineLatest(
@@ -48,7 +46,6 @@ export class ItemListComponent {
       this.pageSize$,
       (ar, i, s) => ar.slice(i * s, (i * s) + s)
     );
-
   }
 
   getBundleName(id: number): string {
@@ -61,7 +58,6 @@ export class ItemListComponent {
   }
 
   onItemFiltersChange(itemFilters: ItemFilters): void {
-    // this.itemFilters$.next(itemFilters);
     this.filterService.setSelectedItemFilters(itemFilters);
   }
 
@@ -133,10 +129,10 @@ export class ItemListComponent {
       // And/Or
       if (itemFilters.seasonFilter.andOr) {
         filteredItems = filteredItems
-          .filter(i => i.seasons.filter(s => this.contains(selectedSeasons, s)).length >= selectedSeasons.length);
+          .filter(i => i.seasons.filter(s => selectedSeasons.includes(s)).length >= selectedSeasons.length);
       } else {
         filteredItems = filteredItems
-          .filter(i => i.seasons.filter(s => this.contains(selectedSeasons, s)).length > 0);
+          .filter(i => i.seasons.filter(s => selectedSeasons.includes(s)).length > 0);
       }
       // Contains Any.Only
       if (itemFilters.seasonFilter.containsAnyOnly) {
@@ -153,10 +149,10 @@ export class ItemListComponent {
       // And/Or
       if (itemFilters.skillFilter.andOr) {
         filteredItems = filteredItems
-          .filter(i => i.skills.filter(s => this.contains(selectedSkills, s)).length >= selectedSkills.length);
+          .filter(i => i.skills.filter(s => selectedSkills.includes(s)).length >= selectedSkills.length);
       } else {
         filteredItems = filteredItems
-          .filter(i => i.skills.filter(s => this.contains(selectedSkills, s)).length > 0);
+          .filter(i => i.skills.filter(s => selectedSkills.includes(s)).length > 0);
       }
       // Contains Any.Only
       if (itemFilters.skillFilter.containsAnyOnly) {
@@ -172,17 +168,17 @@ export class ItemListComponent {
       const selectedRoom = itemFilters.bundleFilter.selectedRoom;
       const roomBundleIds: number[] = db.bundles.filter(b => b.room === selectedRoom).map(b => b.id);
       filteredItems = filteredItems
-        .filter(i => i.bundles.filter(b => this.contains(roomBundleIds, b)).length > 0);
+        .filter(i => i.bundles.filter(b => roomBundleIds.includes(b)).length > 0);
     }
     const selectedBundles = itemFilters.bundleFilter.selectedBundles;
     if (selectedBundles.length > 0) {
       // And/Or
       if (itemFilters.bundleFilter.andOr) {
         filteredItems = filteredItems
-          .filter(i => i.bundles.filter(b => this.contains(selectedBundles, b)).length >= selectedBundles.length);
+          .filter(i => i.bundles.filter(b =>  selectedBundles.includes(b)).length >= selectedBundles.length);
       } else {
         filteredItems = filteredItems
-          .filter(i => i.bundles.filter(b => this.contains(selectedBundles, b)).length > 0);
+          .filter(i => i.bundles.filter(b => selectedBundles.includes(b)).length > 0);
       }
       // Contains Any.Only
       if (itemFilters.bundleFilter.containsAnyOnly) {
@@ -213,9 +209,5 @@ export class ItemListComponent {
       width: '250px',
       data: { dialog }
     }).afterClosed();
-  }
-
-  private contains (array: any[], item: any): boolean {
-    return array.indexOf(item) > -1;
   }
 }
