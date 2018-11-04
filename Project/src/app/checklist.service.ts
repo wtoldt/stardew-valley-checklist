@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
-import { YesNoDialogComponent } from './yes-no-dialog/yes-no-dialog.component';
 import { map } from 'rxjs/operators';
-import { db, bundleItemMap, bundleMap } from './db';
+import { bundleItemMap, bundleMap, db } from './db';
+import { YesNoDialogComponent } from './yes-no-dialog/yes-no-dialog.component';
 
 export interface SavedList {
   name: string;
@@ -293,7 +293,7 @@ export class ChecklistService {
     this.savedLists$.next([...savedLists, savedList]);
   }
 
-  private askToDeleteSave(): Observable<any> {
+  askToDeleteSave(): Observable<any> {
     const dialogRef = this.dialog.open(YesNoDialogComponent, {
       width: '250px',
       data: { dialog: 'This will delete the save, are you sure?'}
