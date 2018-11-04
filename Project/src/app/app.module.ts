@@ -5,13 +5,6 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavComponent } from './nav/nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule, MatButtonModule,
-  MatSidenavModule, MatIconModule, MatListModule,
-  MatGridListModule, MatCardModule, MatMenuModule,
-  MatTabsModule, MatChipsModule, MatSelectModule,
-  MatTooltipModule, MatInputModule, MatCheckboxModule,
-  MatSlideToggleModule, MatPaginatorModule,
-  MatDialogModule, MatSnackBarModule} from '@angular/material';
 import { ItemListComponent } from './item-list/item-list.component';
 import { ItemFilterToolbarComponent } from './item-list/item-filter-toolbar/item-filter-toolbar.component';
 import { ItemSeasonFilterComponent,
@@ -29,6 +22,7 @@ import { RoomListComponent } from './room-list/room-list.component';
 import { SeasonListComponent } from './season-list/season-list.component';
 import { SkillListComponent } from './skill-list/skill-list.component';
 import { BundleFilterChipComponent } from './bundle-list/bundle-filter-toolbar/bundle-filters/bundle-filter-chip.component';
+import { MaterialModule } from './material.module';
 
 @NgModule({
   declarations: [
@@ -56,24 +50,7 @@ import { BundleFilterChipComponent } from './bundle-list/bundle-filter-toolbar/b
     BrowserModule,
     BrowserAnimationsModule,
     LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule,
-    MatGridListModule,
-    MatCardModule,
-    MatMenuModule,
-    MatTabsModule,
-    MatChipsModule,
-    MatSelectModule,
-    MatTooltipModule,
-    MatInputModule,
-    MatCheckboxModule,
-    MatSlideToggleModule,
-    MatPaginatorModule,
-    MatDialogModule,
-    MatSnackBarModule
+    MaterialModule
   ],
   providers: [],
   entryComponents: [
